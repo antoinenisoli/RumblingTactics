@@ -1,8 +1,11 @@
+local enemy = require 'scripts/entities/enemy'
+local tile = require 'scripts/entities/tile'
+
 mousePositionX, mousePositionY = 0, 0
 scaleFactor = 1
 local gridSizeX, gridSizeY = 640, 640
-local enemy = require 'scripts/entities/enemy'
-local tile = require 'scripts/entities/tile'
+local startX, startY = 700, 250
+local t, shakeMagnitude = 0,0
 local selectedTile = nil
 local allTiles = {}
 local instances = {}
@@ -13,7 +16,6 @@ function love.load()
     love.window.setFullscreen(true)
     love.keyboard.keysPressed = {}
 
-    local startX, startY = 700, 250
     for x = 0, gridSizeX, 64 do
         for y = 0, gridSizeY, 64 do
             local currentTile = tile.new(startX + x, startY + y, "tile"..tostring(x+y))
@@ -26,13 +28,32 @@ function love.load()
     NewInstance(newEnemy)
 end
 
+function CameraShake(duration, magnitude)
+    t, shakeMagnitude = duration, magnitude 
+end
+
 function NewInstance(element)
     table.insert(instances, element)
 end
 
-function love.draw()
-    love.graphics.push()
+function RemoveInstance(element)
+    for index, value in ipairs(instances) do
+        if value == element then
+            table.remove(instances, index)
+        end
+    end
 
+    element = nil
+end
+
+function love.draw()
+    if t > 0 then
+        local dx = love.math.random(-shakeMagnitude, shakeMagnitude)
+        local dy = love.math.random(-shakeMagnitude, shakeMagnitude)
+        love.graphics.translate(dx, dy)
+    end
+
+    love.graphics.push()
     love.graphics.scale(scaleFactor, scaleFactor)   -- reduce everything by 50% in both X and Y coordinates
     love.graphics.print("mouse : "..tostring(mousePositionX).." "..tostring(mousePositionY))
     if selectedTile ~= nil then
@@ -74,5 +95,9 @@ function love.update(dt)
         if (value:OnMouse()) then
             selectedTile = value
         end
+    end
+
+    if t >= 0 then
+        t = t - dt
     end
 end
