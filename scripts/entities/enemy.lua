@@ -2,6 +2,7 @@ local anim8 = require 'libraries/anim8' --for animations
 local entity = require 'scripts/entities/entity'
 local hitFX = require 'scripts/entities/hitFX'
 local explosion = require 'scripts/entities/explosion'
+local rescueShip = require 'scripts/entities/rescueShip'
 local enemy = {}
 enemy.__index = enemy
 setmetatable(enemy, entity)
@@ -11,8 +12,13 @@ local scale = 1
 function enemy.new(x, y, name)
     local instance = setmetatable({}, enemy)
     instance.currentTarget = nil
+
+    instance.localX = x
+    instance.localY = y
+
     instance.x = x
     instance.y = y
+
     instance.name = name
     instance:setupAnimations()
     instance.sprite = love.graphics.newImage('assets/sprites/ground_shaker_asset/Blue/Bodies/body_tracks.png')
@@ -22,9 +28,13 @@ function enemy.new(x, y, name)
     instance.shootTimer = 0
     instance.shootRate = 1
     instance.animTimer = 0
+    instance.minDistance = 200
 
-    instance.speed = 80
+    instance.speed = 150
     instance.direction = 1
+
+    instance.t = 0
+    instance.shakeMagnitude = 0
 
     instance:setupHealth()
     return instance
@@ -45,8 +55,8 @@ function enemy:draw()
         love.graphics.setColor(255, 0, 0, 1)
     end
 
-    love.graphics.draw(self.sprite, self.x - self.width/2, self.y - self.height/2, nil, scale, scale)
-    self.currentAnimation:draw(self.spriteSheet, self.x, self.y - self.height/2, nil, scale, scale, self.height/2, 0)
+    love.graphics.draw(self.sprite, self.x + self.localX, self.y + self.localY, nil, scale, scale, self.width/2, self.height/2)
+    self.currentAnimation:draw(self.spriteSheet, self.x + self.localX, self.y + self.localY - self.height/2, nil, scale, scale, self.height/2, 0)
     love.graphics.setColor(255, 255, 255, 1)
 end
 
@@ -55,7 +65,7 @@ function enemy:setupAnimations()
     self.grid = anim8.newGrid(128, 128, self.spriteSheet:getWidth(), self.spriteSheet:getHeight())
     self.animations = {}
     self.animations.idle = anim8.newAnimation(self.grid('1-1', 1), 0.05)
-    self.animations.shoot = anim8.newAnimation(self.grid('1-8', 1), 0.05)
+    self.animations.shoot = anim8.newAnimation(self.grid('1-8', 1), 0.04)
     self.currentAnimation = self.animations.idle
 end
 
@@ -64,6 +74,7 @@ function enemy:takeDmg(amount)
     local fx = hitFX.new(self.x + love.math.random(-20, 20), self.y + love.math.random(-20, 20))
     NewInstance(fx)
     self.health.hit = true
+    self:shake(0.3, 5)
 
     if (self.health.currentHealth <= 0 and not self.health.dead) then
         self:death()
@@ -77,7 +88,6 @@ function enemy:death()
     CameraShake(0.3, 5)
     local fx = explosion.new(self.x, self.y)
     NewInstance(fx)
-
     RemoveInstance(self)
 end
 
@@ -91,6 +101,7 @@ end
 function enemy:shoot()
     self.currentAnimation = self.animations.shoot
     self.animTimer = self.animations.shoot.totalDuration
+    mainShip:takeDmg(1)
 end
 
 function enemy:move(dt)
@@ -106,13 +117,20 @@ end
 
 function enemy:update(dt)
     self.currentAnimation:update(dt)
+    self:manageShake(dt)
     self:manageHit(dt)
-    self:move(dt)
     self:resetIdle(dt)
-    self.shootTimer = self.shootTimer + dt
-    if self.shootTimer > self.shootRate then
+
+    local dist = Distance(self.x, self.y, mainShip.x, mainShip.y)
+    if (dist < self.minDistance) then
+        self.shootTimer = self.shootTimer + dt
+        if self.shootTimer > self.shootRate then
+            self.shootTimer = 0
+            self:shoot()
+        end
+    else
         self.shootTimer = 0
-        self:shoot()
+        self:move(dt)
     end
 end
 

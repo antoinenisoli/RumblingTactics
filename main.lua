@@ -1,8 +1,11 @@
 local enemy = require 'scripts/entities/enemy'
 local tile = require 'scripts/entities/tile'
+local rescueShip = require 'scripts/entities/rescueShip'
+local hud = require 'scripts/hud'
 
 mousePositionX, mousePositionY = 0, 0
 scaleFactor = 1
+mainShip = nil
 local gridSizeX, gridSizeY = 640, 640
 local startX, startY = 700, 250
 local t, shakeMagnitude = 0,0
@@ -12,19 +15,31 @@ local instances = {}
 
 function love.load()
     math.randomseed(os.time())
+    love.graphics.setDefaultFilter("nearest", "nearest")
     love.window.setTitle('Jam')
     love.window.setFullscreen(true)
     love.keyboard.keysPressed = {}
 
+    local index = 0
+    local count = (gridSizeX/64 + 1) * (gridSizeY/64 + 1)
+    --local shipSize = 3
     for x = 0, gridSizeX, 64 do
         for y = 0, gridSizeY, 64 do
-            local currentTile = tile.new(startX + x, startY + y, "tile"..tostring(x+y))
+            index = index + 1
+            local currentTile = tile.new(startX + x, startY + y, "tile"..tostring(index))
             NewInstance(currentTile)
-            table.insert(allTiles, currentTile)
+            table.insert(allTiles, index, currentTile)
+
+            if index > count/2 - 2 and index < count/2 + 1  then
+                currentTile.locked = true
+            end
         end
     end
 
-    newEnemy = enemy.new(0, startY*2, "enemy0")
+    mainShip = rescueShip.new(startX * 1.5, startY * 2)
+    NewInstance(mainShip)
+
+    newEnemy = enemy.new(0, startY * 2, "enemy0")
     NewInstance(newEnemy)
 end
 
@@ -46,6 +61,11 @@ function RemoveInstance(element)
     element = nil
 end
 
+function Distance(x1, y1, x2, y2)
+    local i = math.pow((x2 - x1), 2) + math.pow((y2 - y1), 2)
+    return math.sqrt(i)
+end
+
 function love.draw()
     if t > 0 then
         local dx = love.math.random(-shakeMagnitude, shakeMagnitude)
@@ -55,6 +75,7 @@ function love.draw()
 
     love.graphics.push()
     love.graphics.scale(scaleFactor, scaleFactor)   -- reduce everything by 50% in both X and Y coordinates
+    hud.draw()
     love.graphics.print("mouse : "..tostring(mousePositionX).." "..tostring(mousePositionY))
     if selectedTile ~= nil then
         love.graphics.print(selectedTile.name, 0, 25)
@@ -87,6 +108,7 @@ end
 function love.update(dt)
     selectedTile = nil
     mousePositionX, mousePositionY = love.mouse.getPosition()
+    
     for index, value in ipairs(instances) do
         value:update(dt)
     end
