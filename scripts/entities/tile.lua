@@ -30,7 +30,7 @@ function tile:draw()
 
     love.graphics.draw(self.sprite, self.x - self.width/2, self.y - self.height/2, nil, scale, scale)
     love.graphics.setColor(255,255,255,1)
-    love.graphics.print(self.name, self.x - self.width/2, self.y - self.height/2)
+    --love.graphics.print(self.name, self.x - self.width/2, self.y - self.height/2)
 end
 
 function tile:OnMouse()

@@ -1,7 +1,7 @@
-local enemy = require 'scripts/entities/enemy'
+local gameManager = require 'scripts/gameManager'
 local tile = require 'scripts/entities/tile'
 local rescueShip = require 'scripts/entities/rescueShip'
-local hud = require 'scripts/hud'
+local hud = require 'scripts/UI/hud'
 local enemySpawner = require 'scripts/enemySpawner'
 
 mousePositionX, mousePositionY = 0, 0
@@ -79,6 +79,10 @@ function RemoveEnemy(enemy)
     end
 end
 
+function GameOver()
+    love.event.quit('restart')
+end
+
 function RemoveInstance(element)
     for index, value in ipairs(instances) do
         if value == element then
@@ -98,6 +102,10 @@ function GetAngle(x1,y1, x2,y2)
     return math.atan2(x2-x1, y2-y1) 
 end
 
+function NewColor(r, g, b, a)
+    return r, g, b, a
+end
+
 function love.draw()
     if t > 0 then
         local dx = love.math.random(-shakeMagnitude, shakeMagnitude)
@@ -107,8 +115,6 @@ function love.draw()
 
     love.graphics.push()
     love.graphics.scale(scaleFactor, scaleFactor)   -- reduce everything by 50% in both X and Y coordinates
-    hud.draw()
-    love.graphics.print("mouse : "..tostring(mousePositionX).." "..tostring(mousePositionY))
     if selectedTile ~= nil then
         love.graphics.print(selectedTile.name, 0, 25)
     end
@@ -117,6 +123,7 @@ function love.draw()
         value:draw()
     end
 
+    hud.draw()
     love.graphics.pop()
 end
 
@@ -130,7 +137,6 @@ end
 
 function love.mousepressed(x, y, button)
     if button == 1 then
-        print("click")
         if selectedTile ~= nil then
             selectedTile:Click()
         end
@@ -140,6 +146,7 @@ end
 function love.update(dt)
     selectedTile = nil
     mousePositionX, mousePositionY = love.mouse.getPosition()
+    hud:update(dt)
 
     for index, value in ipairs(spawners) do
         value:runTimer(dt)
@@ -150,7 +157,7 @@ function love.update(dt)
     end
 
     for index, value in ipairs(allTiles) do
-        if (value:OnMouse()) then
+        if (value:OnMouse() and gameManager.canBuy(turretCost)) then
             selectedTile = value
         end
     end

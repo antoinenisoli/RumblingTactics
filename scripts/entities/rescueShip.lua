@@ -1,7 +1,8 @@
-local anim8 = require 'libraries/anim8' --for animations
 local entity = require 'scripts/entities/entity'
 local hitFX = require 'scripts/entities/hitFX'
 local explosion = require 'scripts/entities/explosion'
+local hud = require 'scripts/UI/hud'
+
 local rescueShip = {}
 rescueShip.__index = rescueShip
 setmetatable(rescueShip, entity)
@@ -32,7 +33,7 @@ function rescueShip:setupHealth()
     self.health = {}
     self.health.hitTimer = 0
     self.health.hitDuration = 0.1
-    self.health.maxHealth = 50
+    self.health.maxHealth = 150
     self.health.currentHealth = self.health.maxHealth
     self.health.dead = false
     self.health.hit = false
@@ -54,8 +55,10 @@ function rescueShip:takeDmg(amount)
     local fx = hitFX.new(self.x + love.math.random(-20, 20), self.y + love.math.random(-20, 20))
     NewInstance(fx)
     self.health.hit = true
+    self.health.hitTimer = self.health.hitDuration
     self:setHealthbar()
     self:shake(0.2, 5)
+    hud.newFloatingTxt(amount, self.x, self.y, 1, NewColor(255, 0, 0, 1))
 
     if (self.health.currentHealth <= 0) then
         self:death()
@@ -69,6 +72,7 @@ function rescueShip:death()
     NewInstance(fx)
     RemoveInstance(self)
     mainShip = nil
+    GameOver()
 end
 
 function rescueShip:draw()

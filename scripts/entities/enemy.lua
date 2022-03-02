@@ -2,7 +2,8 @@ local anim8 = require 'libraries/anim8' --for animations
 local entity = require 'scripts/entities/entity'
 local hitFX = require 'scripts/entities/hitFX'
 local explosion = require 'scripts/entities/explosion'
-local rescueShip = require 'scripts/entities/rescueShip'
+local gameManager = require 'scripts/gameManager'
+local hud = require 'scripts/UI/hud'
 local enemy = {}
 enemy.__index = enemy
 setmetatable(enemy, entity)
@@ -23,9 +24,11 @@ function enemy.new(x, y, name)
     instance.height = instance.sprite:getHeight() * scale
 
     instance.shootTimer = 0
-    instance.shootRate = 1
+    instance.shootRate = 2
     instance.animTimer = 0
     instance.minDistance = 200
+    instance.scoreValue = 25
+    instance.attackDamage = 1
 
     instance.speed = 150
     instance.direction = 1
@@ -38,8 +41,8 @@ end
 function enemy:setupHealth()
     self.health = {}
     self.health.hitTimer = 0
-    self.health.hitDuration = 0.1
-    self.health.maxHealth = 18
+    self.health.hitDuration = 0.2
+    self.health.maxHealth = 10
     self.health.currentHealth = self.health.maxHealth
     self.health.dead = false
     self.health.hit = false
@@ -66,10 +69,13 @@ end
 
 function enemy:takeDmg(amount)
     self.health.currentHealth = self.health.currentHealth - amount
+    self.health.hit = true
+    self.health.hitTimer = self.health.hitDuration
+
+    self:shake(0.2, 2)
+    hud.newFloatingTxt(amount, self.x, self.y, 1, NewColor(255, 0, 0, 1))
     local fx = hitFX.new(self.x + love.math.random(-20, 20), self.y + love.math.random(-20, 20))
     NewInstance(fx)
-    self.health.hit = true
-    self:shake(0.2, 2)
 
     if (self.health.currentHealth <= 0 and not self.health.dead) then
         self:death()
@@ -77,9 +83,11 @@ function enemy:takeDmg(amount)
 end
 
 function enemy:death()
-    print("death")
+    gameManager.addMoney(self.scoreValue)
     self.health.dead = true
     newEnemy = nil
+
+    hud.newFloatingTxt(self.scoreValue, self.x, self.y, 1, NewColor(255,0,0,1))
     CameraShake(0.3, 5)
     local fx = explosion.new(self.x, self.y)
     NewInstance(fx)
@@ -90,7 +98,7 @@ end
 function enemy:shoot()
     self.currentAnimation = self.animations.shoot
     self.animTimer = self.animations.shoot.totalDuration
-    mainShip:takeDmg(1)
+    mainShip:takeDmg(self.attackDamage)
 end
 
 function enemy:move(dt)
@@ -112,19 +120,21 @@ function enemy:update(dt)
 
     if mainShip ~= nil then
         self.rotation = GetAngle(self.x, self.y, mainShip.x, mainShip.y)
+
+        local dist = Distance(self.x, self.y, mainShip.x, mainShip.y)
+        if (dist < self.minDistance) then
+            self.shootTimer = self.shootTimer + dt
+            if self.shootTimer > self.shootRate then
+                self.shootTimer = 0
+                self:shoot()
+            end
+        else
+            self.shootTimer = 0
+            self:move(dt)
+        end
     end
 
-    local dist = Distance(self.x, self.y, mainShip.x, mainShip.y)
-    if (dist < self.minDistance) then
-        self.shootTimer = self.shootTimer + dt
-        if self.shootTimer > self.shootRate then
-            self.shootTimer = 0
-            self:shoot()
-        end
-    else
-        self.shootTimer = 0
-        self:move(dt)
-    end
+    
 end
 
 return enemy

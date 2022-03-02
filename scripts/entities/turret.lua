@@ -1,17 +1,22 @@
 local entity = require 'scripts/entities/entity'
 local anim8 = require 'libraries/anim8' --for animations
+local gameManager = require 'scripts/gameManager'
 local turret = {}
 turret.__index = turret
 setmetatable(turret, entity)
 local scale = 1
+turretCost = 50
 
 function turret.new(x, y, name)
+    gameManager.addMoney(-turretCost)
     local instance = setmetatable({}, turret)
+    
     instance.x = x
     instance.y = y
     instance.name = name
     instance.rotation = 0
 
+    instance.attackDamage = 1
     instance.shootTimer = 0
     instance.shootRate = 1
     instance.minDistance = 300
@@ -36,11 +41,16 @@ end
 function turret:shoot()
     self.currentAnimation = self.animations.shoot
     self.animTimer = self.animations.shoot.totalDuration
-    self.currentTarget:takeDmg(1)
+    self.currentTarget:takeDmg(self.attackDamage)
 end
 
 function turret:draw()
     self.currentAnimation:draw(self.spriteSheet, self.x, self.y, self.rotation, scale, scale, self.width/2, self.height/2)
+    if self.currentTarget ~= nil and self.shootTimer < 0.3 then
+        love.graphics.setColor(255, 0, 0, 0.5)
+        love.graphics.line(self.x, self.y, self.currentTarget.x, self.currentTarget.y)
+        love.graphics.setColor(255, 255, 255, 1)
+    end
 end
 
 function turret:fight(dt)

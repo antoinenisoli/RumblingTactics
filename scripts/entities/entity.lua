@@ -48,10 +48,13 @@ function entity:manageShake(dt)
 end
 
 function entity:manageHit(dt)
-    self.health.hitTimer = self.health.hitTimer - dt
-    if self.health.hitTimer <= 0 then
-        self.health.hit = false;
+    if self.health.hit then
+        self.health.hitTimer = self.health.hitTimer - dt
+        if self.health.hitTimer <= 0 then
+            self.health.hit = false;
+        end
     end
+    
 end
 
 function entity:update(dt)
