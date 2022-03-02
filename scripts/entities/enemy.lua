@@ -1,12 +1,9 @@
 local anim8 = require 'libraries/anim8' --for animations
-local entity = require 'scripts/entities/entity'
-local hitFX = require 'scripts/entities/hitFX'
-local explosion = require 'scripts/entities/explosion'
+local destroyable = require 'scripts/entities/destroyable'
 local gameManager = require 'scripts/gameManager'
-local hud = require 'scripts/UI/hud'
 local enemy = {}
 enemy.__index = enemy
-setmetatable(enemy, entity)
+setmetatable(enemy, destroyable)
 
 local scale = 1
 
@@ -71,11 +68,7 @@ function enemy:takeDmg(amount)
     self.health.currentHealth = self.health.currentHealth - amount
     self.health.hit = true
     self.health.hitTimer = self.health.hitDuration
-
-    self:shake(0.2, 2)
-    hud.newFloatingTxt(amount, self.x, self.y, 1, NewColor(255, 0, 0, 1))
-    local fx = hitFX.new(self.x + love.math.random(-20, 20), self.y + love.math.random(-20, 20))
-    NewInstance(fx)
+    self:hurtFeedback(amount)
 
     if (self.health.currentHealth <= 0 and not self.health.dead) then
         self:death()
@@ -84,14 +77,8 @@ end
 
 function enemy:death()
     gameManager.addMoney(self.scoreValue)
-    self.health.dead = true
+    self:destroy()
     newEnemy = nil
-
-    hud.newFloatingTxt(self.scoreValue, self.x, self.y, 1, NewColor(255,0,0,1))
-    CameraShake(0.3, 5)
-    local fx = explosion.new(self.x, self.y)
-    NewInstance(fx)
-    RemoveInstance(self)
     RemoveEnemy(self)
 end
 

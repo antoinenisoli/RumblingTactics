@@ -1,11 +1,8 @@
-local entity = require 'scripts/entities/entity'
-local hitFX = require 'scripts/entities/hitFX'
-local explosion = require 'scripts/entities/explosion'
-local hud = require 'scripts/UI/hud'
+local destroyable = require 'scripts/entities/destroyable'
 
 local rescueShip = {}
 rescueShip.__index = rescueShip
-setmetatable(rescueShip, entity)
+setmetatable(rescueShip, destroyable)
 
 local scale = 1
 citizens = 100
@@ -52,13 +49,10 @@ function rescueShip:takeDmg(amount)
     end
 
     self.health.currentHealth = self.health.currentHealth - amount
-    local fx = hitFX.new(self.x + love.math.random(-20, 20), self.y + love.math.random(-20, 20))
-    NewInstance(fx)
     self.health.hit = true
     self.health.hitTimer = self.health.hitDuration
     self:setHealthbar()
-    self:shake(0.2, 5)
-    hud.newFloatingTxt(amount, self.x, self.y, 1, NewColor(255, 0, 0, 1))
+    self:hurtFeedback(amount)
 
     if (self.health.currentHealth <= 0) then
         self:death()
@@ -67,10 +61,7 @@ end
 
 function rescueShip:death()
     self.health.dead = true
-    CameraShake(0.3, 5)
-    local fx = explosion.new(self.x, self.y)
-    NewInstance(fx)
-    RemoveInstance(self)
+    self:destroy()
     mainShip = nil
     GameOver()
 end
@@ -89,12 +80,8 @@ function rescueShip:update(dt)
     self:manageShake(dt)
     self:manageHit(dt)
 
-    if citizens > 0 then
-        self.timer = self.timer - dt * self.fleeSpeed
-        if (self.timer < 0) then
-            self.timer = self.fleeDuration
-            citizens = citizens - 1
-        end
+    if citizens <= 0 then
+        GameWin()
     end
 end
 

@@ -39,6 +39,8 @@ function love.load()
         end
     end
 
+    gameManager.init(startX, startX * 2, startY, startY * 4)
+
     mainShip = rescueShip.new(startX * 1.5, startY * 2)
     NewInstance(mainShip)
 
@@ -80,6 +82,10 @@ function RemoveEnemy(enemy)
 end
 
 function GameOver()
+    love.event.quit('restart')
+end
+
+function GameWin()
     love.event.quit('restart')
 end
 
@@ -147,6 +153,7 @@ function love.update(dt)
     selectedTile = nil
     mousePositionX, mousePositionY = love.mouse.getPosition()
     hud:update(dt)
+    gameManager:update(dt)
 
     for index, value in ipairs(spawners) do
         value:runTimer(dt)
