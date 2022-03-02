@@ -5,7 +5,7 @@ turret.__index = turret
 setmetatable(turret, entity)
 local scale = 1
 
-function turret.new(x,y, name)
+function turret.new(x, y, name)
     local instance = setmetatable({}, turret)
     instance.x = x
     instance.y = y
@@ -14,7 +14,8 @@ function turret.new(x,y, name)
 
     instance.shootTimer = 0
     instance.shootRate = 1
-    instance.currentTarget = newEnemy
+    instance.minDistance = 300
+    instance.currentTarget = nil
 
     instance.width = 128 * scale
     instance.height = 128 * scale
@@ -32,10 +33,6 @@ function turret:setupAnimations()
     self.currentAnimation = self.animations.idle
 end
 
-function turret:getAngle(x1,y1, x2,y2) 
-    return math.atan2(x2-x1, y2-y1) 
-end
-
 function turret:shoot()
     self.currentAnimation = self.animations.shoot
     self.animTimer = self.animations.shoot.totalDuration
@@ -47,7 +44,7 @@ function turret:draw()
 end
 
 function turret:fight(dt)
-    self.rotation = -self:getAngle(self.x, self.y, self.currentTarget.x, self.currentTarget.y) - 3
+    self.rotation = -GetAngle(self.x, self.y, self.currentTarget.x, self.currentTarget.y) - 3
     self.shootTimer = self.shootTimer + dt
     if self.shootTimer > self.shootRate then
         self.shootTimer = 0
@@ -65,7 +62,9 @@ end
 function turret:update(dt)
     self.currentAnimation:update(dt)
     self:resetIdle(dt)
-    if newEnemy ~= nil then
+    self.currentTarget = ClosestEnemy(self.x, self.y, self.minDistance)
+
+    if self.currentTarget ~= nil then
         self:fight(dt)
     else
         self.currentTarget = nil

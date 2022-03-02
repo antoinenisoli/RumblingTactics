@@ -2,6 +2,7 @@ local enemy = require 'scripts/entities/enemy'
 local tile = require 'scripts/entities/tile'
 local rescueShip = require 'scripts/entities/rescueShip'
 local hud = require 'scripts/hud'
+local enemySpawner = require 'scripts/enemySpawner'
 
 mousePositionX, mousePositionY = 0, 0
 scaleFactor = 1
@@ -12,6 +13,8 @@ local t, shakeMagnitude = 0,0
 local selectedTile = nil
 local allTiles = {}
 local instances = {}
+local allEnemies = {}
+local spawners = {}
 
 function love.load()
     math.randomseed(os.time())
@@ -39,8 +42,21 @@ function love.load()
     mainShip = rescueShip.new(startX * 1.5, startY * 2)
     NewInstance(mainShip)
 
-    newEnemy = enemy.new(0, startY * 2, "enemy0")
-    NewInstance(newEnemy)
+    table.insert(spawners, enemySpawner.new(0, love.graphics.getHeight()/2, 1))
+    table.insert(spawners, enemySpawner.new(love.graphics.getWidth(), love.graphics.getHeight()/2, -1))
+end
+
+function ClosestEnemy(x, y, minDistance)
+    local maxDistance = math.huge
+    local closestEnemy = nil
+    for index, value in ipairs(allEnemies) do
+        local distance = Distance(x, y, value.x, value.y)
+        if distance < minDistance and distance < maxDistance then
+            closestEnemy = value
+        end
+    end
+
+    return closestEnemy
 end
 
 function CameraShake(duration, magnitude)
@@ -49,6 +65,18 @@ end
 
 function NewInstance(element)
     table.insert(instances, element)
+end
+
+function NewEnemy(element)
+    table.insert(allEnemies, element)
+end
+
+function RemoveEnemy(enemy)
+    for index, value in ipairs(allEnemies) do
+        if value == enemy then
+            table.remove(allEnemies, index)
+        end
+    end
 end
 
 function RemoveInstance(element)
@@ -64,6 +92,10 @@ end
 function Distance(x1, y1, x2, y2)
     local i = math.pow((x2 - x1), 2) + math.pow((y2 - y1), 2)
     return math.sqrt(i)
+end
+
+function GetAngle(x1,y1, x2,y2) 
+    return math.atan2(x2-x1, y2-y1) 
 end
 
 function love.draw()
@@ -108,7 +140,11 @@ end
 function love.update(dt)
     selectedTile = nil
     mousePositionX, mousePositionY = love.mouse.getPosition()
-    
+
+    for index, value in ipairs(spawners) do
+        value:runTimer(dt)
+    end
+
     for index, value in ipairs(instances) do
         value:update(dt)
     end

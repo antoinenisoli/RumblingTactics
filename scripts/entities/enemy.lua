@@ -12,14 +12,11 @@ local scale = 1
 function enemy.new(x, y, name)
     local instance = setmetatable({}, enemy)
     instance.currentTarget = nil
-
-    instance.localX = x
-    instance.localY = y
-
     instance.x = x
     instance.y = y
 
     instance.name = name
+    instance:setupShake()
     instance:setupAnimations()
     instance.sprite = love.graphics.newImage('assets/sprites/ground_shaker_asset/Blue/Bodies/body_tracks.png')
     instance.width = instance.sprite:getWidth() * scale
@@ -32,9 +29,7 @@ function enemy.new(x, y, name)
 
     instance.speed = 150
     instance.direction = 1
-
-    instance.t = 0
-    instance.shakeMagnitude = 0
+    instance.rotation = 0
 
     instance:setupHealth()
     return instance
@@ -55,8 +50,8 @@ function enemy:draw()
         love.graphics.setColor(255, 0, 0, 1)
     end
 
-    love.graphics.draw(self.sprite, self.x + self.localX, self.y + self.localY, nil, scale, scale, self.width/2, self.height/2)
-    self.currentAnimation:draw(self.spriteSheet, self.x + self.localX, self.y + self.localY - self.height/2, nil, scale, scale, self.height/2, 0)
+    love.graphics.draw(self.sprite, self.x + self.localX, self.y + self.localY, self.rotation, scale, scale, self.width/2, self.height/2)
+    self.currentAnimation:draw(self.spriteSheet, self.x + self.localX, self.y + self.localY, self.rotation, scale, scale, self.width/2, self.height/2)
     love.graphics.setColor(255, 255, 255, 1)
 end
 
@@ -74,7 +69,7 @@ function enemy:takeDmg(amount)
     local fx = hitFX.new(self.x + love.math.random(-20, 20), self.y + love.math.random(-20, 20))
     NewInstance(fx)
     self.health.hit = true
-    self:shake(0.3, 5)
+    self:shake(0.2, 2)
 
     if (self.health.currentHealth <= 0 and not self.health.dead) then
         self:death()
@@ -89,13 +84,7 @@ function enemy:death()
     local fx = explosion.new(self.x, self.y)
     NewInstance(fx)
     RemoveInstance(self)
-end
-
-function enemy:manageHit(dt)
-    self.health.hitTimer = self.health.hitTimer - dt
-    if self.health.hitTimer <= 0 then
-        self.health.hit = false;
-    end
+    RemoveEnemy(self)
 end
 
 function enemy:shoot()
@@ -105,7 +94,7 @@ function enemy:shoot()
 end
 
 function enemy:move(dt)
-    self.x = self.x + self.speed * dt
+    self.x = self.x + self.speed * dt * self.direction
 end
 
 function enemy:resetIdle(dt)
@@ -120,6 +109,10 @@ function enemy:update(dt)
     self:manageShake(dt)
     self:manageHit(dt)
     self:resetIdle(dt)
+
+    if mainShip ~= nil then
+        self.rotation = GetAngle(self.x, self.y, mainShip.x, mainShip.y)
+    end
 
     local dist = Distance(self.x, self.y, mainShip.x, mainShip.y)
     if (dist < self.minDistance) then

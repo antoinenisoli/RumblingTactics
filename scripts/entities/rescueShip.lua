@@ -16,19 +16,14 @@ function rescueShip.new(x, y)
     instance.width = instance.sprite:getWidth() * scale
     instance.height = instance.sprite:getHeight() * scale
 
-    instance.localX = x
-    instance.localY = y
-
     instance.x = x - instance.width/2
     instance.y = y
-
-    instance.t = 0
-    instance.shakeMagnitude = 0
 
     instance.fleeSpeed = 1
     instance.fleeDuration = 1
     instance.timer = instance.fleeDuration
-    
+
+    instance:setupShake()
     instance:setupHealth()
     return instance
 end
@@ -51,14 +46,18 @@ function rescueShip:setHealthbar()
 end
 
 function rescueShip:takeDmg(amount)
+    if self.health.dead then
+        return
+    end
+
     self.health.currentHealth = self.health.currentHealth - amount
     local fx = hitFX.new(self.x + love.math.random(-20, 20), self.y + love.math.random(-20, 20))
     NewInstance(fx)
     self.health.hit = true
     self:setHealthbar()
-    self:shake(0.3, 5)
+    self:shake(0.2, 5)
 
-    if (self.health.currentHealth <= 0 and not self.health.dead) then
+    if (self.health.currentHealth <= 0) then
         self:death()
     end
 end
@@ -69,6 +68,7 @@ function rescueShip:death()
     local fx = explosion.new(self.x, self.y)
     NewInstance(fx)
     RemoveInstance(self)
+    mainShip = nil
 end
 
 function rescueShip:draw()
@@ -79,13 +79,6 @@ function rescueShip:draw()
     love.graphics.draw(self.sprite, self.x + self.localX, self.y + self.localY, nil, scale, scale, self.width/2, self.height/2)
     love.graphics.setColor(255, 255, 255, 1)
     love.graphics.draw(self.healthBar, self.x, self.y, nil, scale, scale, self.healthBar:getWidth()/2, self.healthBar:getHeight()/2)
-end
-
-function rescueShip:manageHit(dt)
-    self.health.hitTimer = self.health.hitTimer - dt
-    if self.health.hitTimer <= 0 then
-        self.health.hit = false;
-    end
 end
 
 function rescueShip:update(dt)

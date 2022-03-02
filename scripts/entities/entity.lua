@@ -3,19 +3,20 @@ entity.__index = entity
 
 function entity.new(x, y)
     local instance = setmetatable({}, entity)
-
-    instance.localX = x
-    instance.localY = y
     instance.x = x
     instance.y = y
 
     instance.width = 0
     instance.height = 0
-
-    instance.t = 0
-    instance.shakeMagnitude = 0
-
+    instance:setupShake()
     return instance
+end
+
+function entity:setupShake()
+    self.localX = 0
+    self.localY = 0
+    self.t = 0
+    self.shakeMagnitude = 0
 end
 
 function entity:drawCollider()
@@ -43,6 +44,13 @@ function entity:manageShake(dt)
     else
         self.localX = 0
         self.localY = 0
+    end
+end
+
+function entity:manageHit(dt)
+    self.health.hitTimer = self.health.hitTimer - dt
+    if self.health.hitTimer <= 0 then
+        self.health.hit = false;
     end
 end
 
