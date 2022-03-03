@@ -8,6 +8,7 @@ function entity.new(x, y)
 
     instance.width = 0
     instance.height = 0
+    instance.speed = 0
     instance:setupShake()
     return instance
 end
@@ -19,14 +20,26 @@ function entity:setupShake()
     self.shakeMagnitude = 0
 end
 
-function entity:drawCollider()
-    love.graphics.setColor(0, 255, 0, 1)
-    love.graphics.rectangle('line', self.x, self.y, self.width, self.height)
-    love.graphics.setColor(255, 255, 255, 1)
+function entity:draw()
+    
 end
 
-function entity:draw()
-    self:drawCollider()
+function entity:follow(dt, target)
+    if self.x < target.x then 						-- If the rectangle is to the left of the circle:
+        self.x = self.x + self.speed * dt			-- Rectangle moves towards the right.
+    end
+    
+    if self.x > target.x then 						-- If the rectangle is to the right of the circle:
+        self.x = self.x - self.speed * dt			-- Rectangle moves towards the left.
+    end
+    
+    if self.y < target.y then 						-- If the rectangle is above the circle:
+        self.y = self.y + self.speed * dt			-- Rectangle moves downward.
+    end
+    
+    if self.y > target.y then 						-- If the rectangle is below the circle:
+        self.y = self.y - self.speed * dt			-- Rectangle moves upward.
+    end
 end
 
 function entity:shake(duration, magnitude)

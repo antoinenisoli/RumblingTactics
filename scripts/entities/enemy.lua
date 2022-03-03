@@ -29,8 +29,7 @@ function enemy.new(x, y, name)
     instance.scoreValue = 25
     instance.attackDamage = 1
 
-    instance.speed = 150
-    instance.direction = 1
+    instance.speed = 60
     instance.rotation = 0
 
     instance:setupHealth()
@@ -41,7 +40,7 @@ function enemy:setupHealth()
     self.health = {}
     self.health.hitTimer = 0
     self.health.hitDuration = 0.2
-    self.health.maxHealth = 10
+    self.health.maxHealth = 5
     self.health.currentHealth = self.health.maxHealth
     self.health.dead = false
     self.health.hit = false
@@ -90,10 +89,6 @@ function enemy:shoot()
     mainShip:takeDmg(self.attackDamage)
 end
 
-function enemy:move(dt)
-    self.x = self.x + self.speed * dt * self.direction
-end
-
 function enemy:resetIdle(dt)
     self.animTimer = self.animTimer - dt
     if self.animTimer <= 0 and self.currentAnimation ~= self.animations.idle then
@@ -108,7 +103,7 @@ function enemy:update(dt)
     self:resetIdle(dt)
 
     if mainShip ~= nil then
-        self.rotation = GetAngle(self.x, self.y, mainShip.x, mainShip.y)
+        self.rotation = -GetAngle(self.x, self.y, mainShip.x, mainShip.y) - 3
 
         local dist = Distance(self.x, self.y, mainShip.x, mainShip.y)
         if (dist < self.minDistance) then
@@ -119,7 +114,7 @@ function enemy:update(dt)
             end
         else
             self.shootTimer = 0
-            self:move(dt)
+            self:follow(dt, mainShip)
         end
     end
 

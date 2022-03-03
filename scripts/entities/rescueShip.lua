@@ -17,12 +17,9 @@ function rescueShip.new(x, y)
     instance.x = x - instance.width/2
     instance.y = y
 
-    instance.fleeSpeed = 1
-    instance.fleeDuration = 1
-    instance.timer = instance.fleeDuration
-
     instance:setupShake()
     instance:setupHealth()
+    NewInstance(instance)
     return instance
 end
 

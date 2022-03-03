@@ -1,0 +1,10 @@
+{
+    "automappingRulesFile": "",
+    "commands": [
+    ],
+    "extensionsPath": "../../../../LOVE2D/RunAndGun/RunAndGunProject/maps/extensions",
+    "folders": [
+        "templates"
+    ],
+    "objectTypesFile": ""
+}

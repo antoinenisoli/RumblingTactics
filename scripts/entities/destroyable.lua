@@ -16,7 +16,7 @@ end
 
 function destroyable:destroy()
     self.health.dead = true
-    CameraShake(0.3, 5)
+    CameraShake(0.3, 2.5)
     local fx = explosion.new(self.x, self.y)
     NewInstance(fx)
     RemoveInstance(self)

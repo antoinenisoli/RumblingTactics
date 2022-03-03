@@ -78,6 +78,7 @@ function turret:update(dt)
         self:fight(dt)
     else
         self.currentTarget = nil
+        self.shootTimer = 0
         self.animTimer = 0
     end
 end
