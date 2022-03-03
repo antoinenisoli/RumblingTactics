@@ -10,7 +10,7 @@ citizens = 100
 function rescueShip.new(x, y)
     local instance = setmetatable({}, rescueShip)
     instance.sprite = love.graphics.newImage('assets/sprites/rescueShip1.png')
-    instance.healthBar = love.graphics.newImage('assets/sprites/Nouveau dossier/UI/tiles/tile0010.png')
+    instance.healthBar = love.graphics.newImage('assets/sprites/cyberpunk/UI/tiles/tile0010.png')
     instance.width = instance.sprite:getWidth() * scale
     instance.height = instance.sprite:getHeight() * scale
 
@@ -38,7 +38,7 @@ function rescueShip:setupHealth()
 end
 
 function rescueShip:setHealthbar()
-    local s = 'assets/sprites/Nouveau dossier/UI/tiles/tile00'
+    local s = 'assets/sprites/cyberpunk/UI/tiles/tile00'
     local index = (self.health.currentHealth / self.health.maxHealth) * 10
     self.healthBar = love.graphics.newImage(s..tostring(math.ceil(index))..".png")
 end

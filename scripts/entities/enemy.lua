@@ -1,6 +1,8 @@
 local anim8 = require 'libraries/anim8' --for animations
 local destroyable = require 'scripts/entities/destroyable'
 local gameManager = require 'scripts/gameManager'
+local hud = require 'scripts/UI/hud'
+
 local enemy = {}
 enemy.__index = enemy
 setmetatable(enemy, destroyable)
@@ -78,7 +80,7 @@ end
 function enemy:death()
     gameManager.addMoney(self.scoreValue)
     self:destroy()
-    newEnemy = nil
+    hud.newFloatingTxt(self.scoreValue, self.x, self.y, 1, NewColor(255, 255, 0, 1))
     RemoveEnemy(self)
 end
 

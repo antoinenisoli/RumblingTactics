@@ -23,18 +23,17 @@ function enemySpawner:runTimer(dt)
     if self.timer <= 0 then
         self.timer = self.delay
         self.index = self.index + 1
-
-        local newEnemy = self:spawn()
-        table.insert(self.allEnemies, newEnemy)
-        NewInstance(newEnemy)
-        NewEnemy(newEnemy)
+        self:spawn()
     end
 end
 
 function enemySpawner:spawn()
-    local e = enemy.new(self.spawnPosX, self.spawnPosY, "enemy"..tostring(self.index))
-    e.direction = self.direction
-    return e
+    local newEnemy = enemy.new(self.spawnPosX, self.spawnPosY, "enemy"..tostring(self.index))
+    newEnemy.direction = self.direction
+    NewInstance(newEnemy)
+    NewEnemy(newEnemy)
+    table.insert(self.allEnemies, newEnemy)
+    return newEnemy
 end
 
 return enemySpawner

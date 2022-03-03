@@ -25,7 +25,7 @@ function tile:draw()
     end
 
     if self.locked then
-        love.graphics.setColor(255,255,255, 0.7)
+        love.graphics.setColor(0.8,0.8,0.8, 1)
     end
 
     love.graphics.draw(self.sprite, self.x - self.width/2, self.y - self.height/2, nil, scale, scale)

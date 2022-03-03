@@ -11,6 +11,8 @@ local gridSizeX, gridSizeY = 640, 640
 local startX, startY = 700, 250
 local t, shakeMagnitude = 0,0
 local selectedTile = nil
+local backGroundImage = love.graphics.newImage("assets/sprites/bg.png")
+
 local allTiles = {}
 local instances = {}
 local allEnemies = {}
@@ -120,6 +122,7 @@ function love.draw()
     end
 
     love.graphics.push()
+    love.graphics.draw(backGroundImage, 0,0)
     love.graphics.scale(scaleFactor, scaleFactor)   -- reduce everything by 50% in both X and Y coordinates
     if selectedTile ~= nil then
         love.graphics.print(selectedTile.name, 0, 25)

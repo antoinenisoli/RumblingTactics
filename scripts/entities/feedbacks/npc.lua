@@ -1,5 +1,6 @@
 local entity = require 'scripts/entities/entity'
 local anim8 = require 'libraries/anim8' -- for animations
+
 local npc = {}
 npc.__index = npc
 setmetatable(npc, entity)
@@ -41,19 +42,19 @@ end
 function npc:toShip(dt)
     if self.x < mainShip.x then 						-- If the rectangle is to the left of the circle:
         self.x = self.x + (self.speed * dt)			-- Rectangle moves towards the right.
-        end
-     
-        if self.x > mainShip.x then 						-- If the rectangle is to the right of the circle:
+    end
+    
+    if self.x > mainShip.x then 						-- If the rectangle is to the right of the circle:
         self.x = self.x - (self.speed * dt) 			-- Rectangle moves towards the left.
-        end
-     
-        if self.y < mainShip.y then 						-- If the rectangle is above the circle:
-            self.y = self.y + (self.speed * dt)			-- Rectangle moves downward.
-        end
-     
-        if self.y > mainShip.y then 						-- If the rectangle is below the circle:
-            self.y = self.y - (self.speed * dt)			-- Rectangle moves upward.
-        end
+    end
+    
+    if self.y < mainShip.y then 						-- If the rectangle is above the circle:
+        self.y = self.y + (self.speed * dt)			-- Rectangle moves downward.
+    end
+    
+    if self.y > mainShip.y then 						-- If the rectangle is below the circle:
+        self.y = self.y - (self.speed * dt)			-- Rectangle moves upward.
+    end
 end
 
 function npc:update(dt)
