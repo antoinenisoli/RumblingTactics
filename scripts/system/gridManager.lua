@@ -3,21 +3,23 @@ local tile = require 'scripts/entities/tile'
 local turretProfilesBank = require 'scripts.profiles.turretProfilesBank'
 
 local gridManager = {}
-local gridSizeX, gridSizeY = 640, 640
-local startX, startY = 700, 250
+local grid = {}
 local selectedTile = nil
 local allTiles = {}
 local turretProfile = nil
 
-function gridManager.setupMap()
+function gridManager.setupMap(newGrid)
     turretProfile = turretProfilesBank.getProfile(1)
+    selectedTile = nil
+    allTiles = {}
+    grid = newGrid
+
     local index = 0
-    local count = (gridSizeX/64 + 1) * (gridSizeY/64 + 1)
-    --local shipSize = 3
-    for x = 0, gridSizeX, 64 do
-        for y = 0, gridSizeY, 64 do
+    local count = (grid.size.x/64 + 1) * (grid.size.y/64 + 1)
+    for x = 0, grid.size.x, 64 do
+        for y = 0, grid.size.y, 64 do
             index = index + 1
-            local currentTile = tile.new(startX + x, startY + y, "tile"..tostring(index))
+            local currentTile = tile.new(grid.startX + x, grid.startY + y, "tile"..tostring(index))
             NewInstance(currentTile)
             table.insert(allTiles, index, currentTile)
 
@@ -43,7 +45,7 @@ end
 function gridManager.update(dt)
     selectedTile = nil
     for index, value in ipairs(allTiles) do
-        if (value:OnMouse() and gameManager.canBuy(turretCost)) then
+        if (value:OnMouse() and gameManager.canBuy(turretProfile.cost)) then
             selectedTile = value
         end
     end

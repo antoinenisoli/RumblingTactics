@@ -1,4 +1,5 @@
 local turretProfilesBank = {}
+local profiles = {}
 
 function turretProfilesBank.getProfile(index)
     local profiles = {

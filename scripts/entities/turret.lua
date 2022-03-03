@@ -1,11 +1,11 @@
 local entity = require 'scripts/entities/entity'
 local anim8 = require 'libraries/anim8' --for animations
 local gameManager = require 'scripts/gameManager'
+
 local turret = {}
 turret.__index = turret
 setmetatable(turret, entity)
 local scale = 1
-turretCost = 50
 
 function turret.new(x, y, profile)
     local instance = setmetatable({}, turret)
@@ -99,6 +99,10 @@ function turret:fight(dt)
     if self.shootTimer > self.shootRate then
         self.shootTimer = 0
         self:shoot()
+    end
+
+    if self.currentTarget.health.currentHealth <= 0 then
+        self.currentTarget = ClosestEnemy(self.x, self.y, self.minDistance)
     end
 end
 

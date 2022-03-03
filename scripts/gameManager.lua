@@ -1,13 +1,20 @@
 local npc = require 'scripts/entities/feedbacks/npc'
-currentMoney = 10000
+
+gameWin = false
+gameEnded = false
+currentMoney = 0
+citizens = 0
+mainShip = nil
 
 local gameManager = {}
-local spawnDelay = 0.6
-local timer = 0
+local gameEndTimer = 0
 local gridMinX, gridMaxX, gridMinY, gridMaxY
 local enemySpawning = {}
+local npcSpawning = {}
 
 function gameManager.init(x1, x2, y1, y2)
+    currentMoney = levelProfile.money
+    citizens = levelProfile.citizens
     gridMinX, gridMaxX, gridMinY, gridMaxY = x1, x2, y1, y2
 
     enemySpawning = {}
@@ -15,6 +22,10 @@ function gameManager.init(x1, x2, y1, y2)
     enemySpawning.delay = 2
     enemySpawning.currentSpawner = nil
     enemySpawning.allSpawners = {}
+
+    npcSpawning = {}
+    npcSpawning.timer = 0
+    npcSpawning.delay = 1
 end
 
 function gameManager.addMoney(amount)
@@ -42,17 +53,43 @@ local function spawnNPC()
 end
 
 function gameManager:update(dt)
-    enemySpawning.timer = enemySpawning.timer + dt
-    if enemySpawning.timer > enemySpawning.delay then
-        enemySpawning.timer = 0
-        randomSpawner()
-    end
+    if gameEnded then
+        gameEndTimer = gameEndTimer + dt
+    else
+        enemySpawning.timer = enemySpawning.timer + dt
+        if enemySpawning.timer > enemySpawning.delay then
+            enemySpawning.timer = 0
+            randomSpawner()
+        end
 
-    timer = timer - dt
-    if timer <= 0 then
-        spawnNPC()
-        timer = spawnDelay
+        npcSpawning.timer = npcSpawning.timer - dt
+        if npcSpawning.timer <= 0 then
+            spawnNPC()
+            npcSpawning.timer = npcSpawning.delay
+        end
+
+        if citizens <= 0 then
+            GameWin()
+        end
     end
+end
+
+function gameManager.checkGameEnd()
+    if gameEnded then
+        if gameEndTimer > 1 then
+            NextLevel()
+        end
+    end
+end
+
+function GameOver()
+    gameWin = false
+    gameEnded = true
+end
+
+function GameWin()
+    gameWin = true
+    gameEnded = true
 end
 
 return gameManager

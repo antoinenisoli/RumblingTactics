@@ -2,17 +2,19 @@ local gameManager = require 'scripts/gameManager'
 local rescueShip = require 'scripts/entities/rescueShip'
 local hud = require 'scripts/UI/hud'
 local enemySpawner = require 'scripts/enemySpawner'
-local lvl = require 'levels.level01'
 local gridManager = require 'scripts/system/gridManager'
+local levelProfilesBank = require 'scripts.profiles.levelProfilesBank'
 
 mousePositionX, mousePositionY = 0, 0
 scaleFactor = 1
-mainShip = nil
 local startX, startY = 700, 250
 local t, shakeMagnitude = 0,0
 local backGroundImage = love.graphics.newImage("assets/sprites/bg.png")
 local moonshine = require 'scripts/moonshine'
 local postEffect = nil
+
+local levelCurrentIndex = 1
+levelProfile = nil
 
 local instances = {}
 local allEnemies = {}
@@ -29,7 +31,7 @@ local function setupPostProcess()
 end
 
 local function setupSpawners()
-    for index, value in ipairs(lvl.layers[2].objects) do
+    for index, value in ipairs(levelProfile.levelData.layers[2].objects) do
         local s = enemySpawner.new(value.x, value.y)
         gameManager.newSpawner(s)
     end
@@ -44,10 +46,13 @@ local function setupGame()
 end
 
 function love.load()
+    levelProfile = levelProfilesBank.getProfile(levelCurrentIndex)
+    backGroundImage = levelProfile.bgSprite
+
     hud:load()
     setupGame()
     setupPostProcess()
-    gridManager.setupMap()
+    gridManager.setupMap(levelProfile.grid)
 
     gameManager.init(startX, startX * 2, startY, startY * 4)
     mainShip = rescueShip.new(startX * 1.5, startY * 2)
@@ -85,14 +90,6 @@ function RemoveEnemy(enemy)
             table.remove(allEnemies, index)
         end
     end
-end
-
-function GameOver()
-    love.event.quit('restart')
-end
-
-function GameWin()
-    love.event.quit('restart')
 end
 
 function RemoveInstance(element)
@@ -153,23 +150,41 @@ function love.keypressed(key)
     end
 
     love.keyboard.keysPressed[key] = true
+    gameManager.checkGameEnd()
+end
+
+function NextLevel()
+    mainShip = nil
+    backGroundImage = love.graphics.newImage("assets/sprites/bg.png")
+    instances = {}
+    allEnemies = {}
+    gameEnded = false
+
+    levelCurrentIndex = math.fmod(levelCurrentIndex, GetLevelProfilesCount())
+    levelCurrentIndex = levelCurrentIndex + 1
+
+    love.load()
 end
 
 function love.mousepressed(x, y, button)
+    gameManager.checkGameEnd()
     gridManager.mousepressed(button)
 end
 
 function love.update(dt)
-    gridManager.update(dt)
-    mousePositionX, mousePositionY = love.mouse.getPosition()
     hud:update(dt)
     gameManager:update(dt)
 
-    for index, value in ipairs(instances) do
-        value:update(dt)
-    end
-
     if t >= 0 then
         t = t - dt
+    end
+
+    if not gameEnded then
+        gridManager.update(dt)
+        mousePositionX, mousePositionY = love.mouse.getPosition()
+
+        for index, value in ipairs(instances) do
+            value:update(dt)
+        end
     end
 end
