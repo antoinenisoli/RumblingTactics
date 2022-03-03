@@ -1,22 +1,19 @@
 local gameManager = require 'scripts/gameManager'
-local tile = require 'scripts/entities/tile'
 local rescueShip = require 'scripts/entities/rescueShip'
 local hud = require 'scripts/UI/hud'
 local enemySpawner = require 'scripts/enemySpawner'
 local lvl = require 'levels.level01'
+local gridManager = require 'scripts/system/gridManager'
 
 mousePositionX, mousePositionY = 0, 0
 scaleFactor = 1
 mainShip = nil
-local gridSizeX, gridSizeY = 640, 640
 local startX, startY = 700, 250
 local t, shakeMagnitude = 0,0
-local selectedTile = nil
 local backGroundImage = love.graphics.newImage("assets/sprites/bg.png")
 local moonshine = require 'scripts/moonshine'
 local postEffect = nil
 
-local allTiles = {}
 local instances = {}
 local allEnemies = {}
 
@@ -29,24 +26,6 @@ local function setupPostProcess()
                     postEffect.chromasep.radius = 2
                     postEffect.scanlines.opacity = 0.5
                     postEffect.filmgrain.size = 2
-end
-
-local function setupMap()
-    local index = 0
-    local count = (gridSizeX/64 + 1) * (gridSizeY/64 + 1)
-    --local shipSize = 3
-    for x = 0, gridSizeX, 64 do
-        for y = 0, gridSizeY, 64 do
-            index = index + 1
-            local currentTile = tile.new(startX + x, startY + y, "tile"..tostring(index))
-            NewInstance(currentTile)
-            table.insert(allTiles, index, currentTile)
-
-            if index > count/2 - 2 and index < count/2 + 1  then
-                currentTile.locked = true
-            end
-        end
-    end
 end
 
 local function setupSpawners()
@@ -65,9 +44,10 @@ local function setupGame()
 end
 
 function love.load()
+    hud:load()
     setupGame()
     setupPostProcess()
-    setupMap()
+    gridManager.setupMap()
 
     gameManager.init(startX, startX * 2, startY, startY * 4)
     mainShip = rescueShip.new(startX * 1.5, startY * 2)
@@ -141,6 +121,7 @@ end
 function love.draw()
     love.graphics.push()
     postEffect(function()
+        love.graphics.setDefaultFilter("nearest", "nearest")
 
     if t > 0 then
         local dx = love.math.random(-shakeMagnitude, shakeMagnitude)
@@ -150,10 +131,6 @@ function love.draw()
 
     love.graphics.draw(backGroundImage, 0,0)
     love.graphics.scale(scaleFactor, scaleFactor)   -- reduce everything by 50% in both X and Y coordinates
-    if selectedTile ~= nil then
-        love.graphics.print(selectedTile.name, 0, 25)
-    end
-
     for index, value in ipairs(instances) do
         value:draw()
     end
@@ -169,31 +146,27 @@ function love.keypressed(key)
         love.event.quit()
     end
 
+    if key == 'right' then
+        hud.moveIndex(1)
+    elseif key == 'left' then
+        hud.moveIndex(-1)
+    end
+
     love.keyboard.keysPressed[key] = true
 end
 
 function love.mousepressed(x, y, button)
-    if button == 1 then
-        if selectedTile ~= nil then
-            selectedTile:Click()
-        end
-    end
+    gridManager.mousepressed(button)
 end
 
 function love.update(dt)
-    selectedTile = nil
+    gridManager.update(dt)
     mousePositionX, mousePositionY = love.mouse.getPosition()
     hud:update(dt)
     gameManager:update(dt)
 
     for index, value in ipairs(instances) do
         value:update(dt)
-    end
-
-    for index, value in ipairs(allTiles) do
-        if (value:OnMouse() and gameManager.canBuy(turretCost)) then
-            selectedTile = value
-        end
     end
 
     if t >= 0 then

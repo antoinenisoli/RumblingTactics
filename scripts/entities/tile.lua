@@ -11,10 +11,14 @@ function tile.new(x,y, name)
     instance.x = x
     instance.y = y
     instance.name = name
+
     instance.sprite = love.graphics.newImage("assets/sprites/tile.png")
     instance.width = instance.sprite:getWidth() * scale
     instance.height = instance.sprite:getHeight() * scale
+
     instance.locked = false
+    instance.myTurret = nil
+
     return instance
 end
 
@@ -22,6 +26,10 @@ function tile:draw()
     --self:drawCollider()
     if self:OnMouse() then
         love.graphics.setColor(0,255,255,1)
+    end
+
+    if self.myTurret ~= nil then
+        self.myTurret.debugRadius = self:OnMouse()
     end
 
     if self.locked then
@@ -38,14 +46,15 @@ function tile:OnMouse()
     and mousePositionX > (self.x - self.width/2) 
     and mousePositionY < (self.y + self.height/2) 
     and mousePositionY > (self.y - self.height/2) 
-    and not self.locked
 end
 
-function tile:Click()
-    print(self.name)
-    local newTurret = turret.new(self.x, self.y, "turret0")
-    NewInstance(newTurret)
-    self.locked = true
+function tile:Click(profile)
+    if not self.locked then
+        print(self.name)
+        self.myTurret = turret.new(self.x, self.y, profile)
+        NewInstance(self.myTurret)
+        self.locked = true
+    end
 end
 
 function tile:update(dt)

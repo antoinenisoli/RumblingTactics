@@ -11,8 +11,6 @@ function floatingText.new(text, x, y, duration, r,g,b,a)
     instance.timer = instance.duration
     instance.speed = 100
     instance.text = text
-
-    print(r,g,b,a)
     instance.color = {
         r = r,
         g = g,

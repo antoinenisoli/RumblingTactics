@@ -40,7 +40,7 @@ function enemy:setupHealth()
     self.health = {}
     self.health.hitTimer = 0
     self.health.hitDuration = 0.2
-    self.health.maxHealth = 5
+    self.health.maxHealth = 15
     self.health.currentHealth = self.health.maxHealth
     self.health.dead = false
     self.health.hit = false

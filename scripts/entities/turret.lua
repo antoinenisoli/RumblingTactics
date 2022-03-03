@@ -7,34 +7,68 @@ setmetatable(turret, entity)
 local scale = 1
 turretCost = 50
 
-function turret.new(x, y, name)
-    gameManager.addMoney(-turretCost)
+function turret.new(x, y, profile)
     local instance = setmetatable({}, turret)
     
     instance.x = x
     instance.y = y
-    instance.name = name
+    instance.profile = profile
     instance.rotation = 0
 
-    instance.attackDamage = 1
     instance.shootTimer = 0
-    instance.shootRate = 1
-    instance.minDistance = 300
     instance.currentTarget = nil
+    instance.debugRadius = false
 
-    instance.width = 128 * scale
-    instance.height = 128 * scale
+    instance.attackDamage = profile.damage
+    instance.shootRate = profile.shootRate
+    instance.minDistance = profile.minDistance
+
+    gameManager.addMoney(-profile.cost)
     instance:setupAnimations()
+
     return instance
 end
 
 function turret:setupAnimations()
-    self.spriteSheet = love.graphics.newImage('assets/sprites/ground_shaker_asset/Red/Weapons/turret_01_mk1.png')
-    self.grid = anim8.newGrid(128, 128, self.spriteSheet:getWidth(), self.spriteSheet:getHeight())
     self.animTimer = 0
     self.animations = {}
+    self.width = 128 * scale
+    self.height = 128 * scale
+
+    if self.profile.index == 1 then
+        self.spriteSheet = love.graphics.newImage('assets/sprites/ground_shaker_asset/Red/Weapons/turret_01_mk1.png')
+        self.grid = anim8.newGrid(128, 128, self.spriteSheet:getWidth(), self.spriteSheet:getHeight())
+        
+        self.animations.shoot = anim8.newAnimation(self.grid('1-8', 1), 0.05)
+
+    elseif self.profile.index == 2 then
+        self.spriteSheet = love.graphics.newImage('assets/sprites/ground_shaker_asset/Red/Weapons/turret_01_mk2.png')
+        self.grid = anim8.newGrid(128, 128, self.spriteSheet:getWidth(), self.spriteSheet:getHeight())
+        
+        self.animations.shoot = anim8.newAnimation(self.grid('1-8', 1), 0.05)
+
+    elseif self.profile.index == 3 then
+        self.spriteSheet = love.graphics.newImage('assets/sprites/ground_shaker_asset/Red/Weapons/turret_01_mk4.png')
+        self.grid = anim8.newGrid(128, 128, self.spriteSheet:getWidth(), self.spriteSheet:getHeight())
+        
+        self.animations.shoot = anim8.newAnimation(self.grid('1-8', 1), 0.05)
+
+    elseif self.profile.index == 4 then
+        self.spriteSheet = love.graphics.newImage('assets/sprites/ground_shaker_asset/Red/Weapons/turret_02_mk1.png')
+        self.grid = anim8.newGrid(128, 128, self.spriteSheet:getWidth(), self.spriteSheet:getHeight())
+        
+        self.animations.shoot = anim8.newAnimation(self.grid('1-11', 1), 0.02)
+
+    elseif self.profile.index == 5 then
+        self.spriteSheet = love.graphics.newImage('assets/sprites/turret05.png')
+        self.grid = anim8.newGrid(57, 77, self.spriteSheet:getWidth(), self.spriteSheet:getHeight())
+        self.width = 57
+        self.height = 77
+
+        self.animations.shoot = anim8.newAnimation(self.grid('1-1', 1), 0.05)
+    end
+
     self.animations.idle = anim8.newAnimation(self.grid('1-1', 1), 0.05)
-    self.animations.shoot = anim8.newAnimation(self.grid('1-8', 1), 0.05)
     self.currentAnimation = self.animations.idle
 end
 
@@ -46,7 +80,13 @@ end
 
 function turret:draw()
     self.currentAnimation:draw(self.spriteSheet, self.x, self.y, self.rotation, scale, scale, self.width/2, self.height/2)
-    if self.currentTarget ~= nil and self.shootTimer < 0.3 then
+    if self.debugRadius then
+        love.graphics.setColor(255,0,0,1)
+        love.graphics.circle("line", self.x, self.y, self.minDistance)
+        love.graphics.setColor(255,255,255,1)
+    end
+
+    if self.currentTarget ~= nil then
         love.graphics.setColor(255, 0, 0, 0.5)
         love.graphics.line(self.x, self.y, self.currentTarget.x, self.currentTarget.y)
         love.graphics.setColor(255, 255, 255, 1)
@@ -72,13 +112,11 @@ end
 function turret:update(dt)
     self.currentAnimation:update(dt)
     self:resetIdle(dt)
-    self.currentTarget = ClosestEnemy(self.x, self.y, self.minDistance)
 
     if self.currentTarget ~= nil then
         self:fight(dt)
     else
-        self.currentTarget = nil
-        self.shootTimer = 0
+        self.currentTarget = ClosestEnemy(self.x, self.y, self.minDistance)
         self.animTimer = 0
     end
 end

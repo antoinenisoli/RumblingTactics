@@ -1,5 +1,5 @@
 local npc = require 'scripts/entities/feedbacks/npc'
-currentMoney = 100
+currentMoney = 10000
 
 local gameManager = {}
 local spawnDelay = 0.6

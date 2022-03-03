@@ -71,7 +71,7 @@ function entity:manageHit(dt)
 end
 
 function entity:update(dt)
-    self:manageShake(dt)
+    
 end
 
 return entity
