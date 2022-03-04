@@ -27,13 +27,13 @@ function enemy.new(x, y, name)
     instance.height = instance.sprite:getHeight() * scale
 
     instance.shootTimer = 0
-    instance.shootRate = 2
+    instance.shootRate = levelProfile.enemyStats.shootRate
     instance.animTimer = 0
-    instance.minDistance = 200
-    instance.scoreValue = 25
-    instance.attackDamage = 1
+    instance.minDistance = levelProfile.enemyStats.minDistance
+    instance.scoreValue = levelProfile.enemyStats.scoreValue
+    instance.attackDamage = levelProfile.enemyStats.damage
 
-    instance.speed = 60
+    instance.speed = levelProfile.enemyStats.speed
     instance.rotation = 0
 
     instance:setupHealth()
@@ -61,7 +61,7 @@ function enemy:draw()
 end
 
 function enemy:setupAnimations()
-    self.spriteSheet = love.graphics.newImage('assets/sprites/ground_shaker_asset/Blue/Weapons/turret_01_mk1.png')
+    self.spriteSheet = levelProfile.enemyStats.turretSpritesheet
     self.grid = anim8.newGrid(128, 128, self.spriteSheet:getWidth(), self.spriteSheet:getHeight())
     self.animations = {}
     self.animations.idle = anim8.newAnimation(self.grid('1-1', 1), 0.05)

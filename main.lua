@@ -5,6 +5,16 @@ local enemySpawner = require 'scripts/enemySpawner'
 local gridManager = require 'scripts/system/gridManager'
 local levelProfilesBank = require 'scripts.profiles.levelProfilesBank'
 local soundManager = require 'scripts.soundManager'
+flux = require "libraries.flux"
+
+local splashes = {
+    ["o-ten-one"]           = {module="o-ten-one"},
+    ["o-ten-one: lighten"]  = {module="o-ten-one", {fill="lighten"}},
+    ["o-ten-one: rain"]     = {module="o-ten-one", {fill="rain"}},
+    ["o-ten-one: black"]    = {module="o-ten-one", {background={0, 0, 0}}},
+  }
+
+local splash 
 
 mousePositionX, mousePositionY = 0, 0
 scaleFactor = 1
@@ -48,7 +58,17 @@ local function setupGame()
     love.keyboard.keysPressed = {}
 end
 
+local function setupSplashes()
+    for name, entry in pairs(splashes) do
+        entry.module = require(entry.module)
+        splashes[name] = function ()
+            return entry.module(unpack(entry))
+        end
+    end
+end
+
 function love.load()
+    setupSplashes()
     t, shakeMagnitude = 0,0
     vid = love.graphics.newVideo("assets/videos/tuto.ogv")
     vid:play()
@@ -64,6 +84,9 @@ function love.load()
     gameManager.init(levelProfile.grid.startX, levelProfile.grid.startX * 2, levelProfile.grid.startY, levelProfile.grid.startY * 4)
     mainShip = rescueShip.new(levelProfile.grid.startX * 1.5, levelProfile.grid.startY * 2)
     setupSpawners()
+
+    splash = splashes["o-ten-one: black"]()
+    splash.onDone = function() flux.to(splash, 1, {alpha = 0}):oncomplete(function() splash = nil end) end
 end
 
 function ClosestEnemy(x, y, minDistance)
@@ -146,6 +169,10 @@ function love.draw()
     if vid:isPlaying() then
         --love.graphics.draw(vid, 0, 0)
     end
+    
+    if splash ~= nil then
+        splash:draw()
+    end
 end
 
 function love.keypressed(key)
@@ -170,11 +197,14 @@ function NextLevel()
     allEnemies = {}
     gameEnded = false
     levelTransition = false
-    levelCurrentIndex = math.fmod(levelCurrentIndex, GetLevelProfilesCount())
     if gameWin then
+        levelCurrentIndex = math.fmod(levelCurrentIndex, GetLevelProfilesCount())
         levelCurrentIndex = levelCurrentIndex + 1
     end
 
+    if levelCurrentIndex <= 0 then
+        levelCurrentIndex = 1
+    end
     love.load()
 end
 
@@ -184,6 +214,11 @@ function love.mousepressed(x, y, button)
 end
 
 function love.update(dt)
+    if splash ~= nil then
+        splash:update(dt)
+    end
+
+    flux.update(dt)
     hud:update(dt)
     gameManager:update(dt)
 

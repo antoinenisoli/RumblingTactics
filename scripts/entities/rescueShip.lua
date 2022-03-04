@@ -47,13 +47,17 @@ function rescueShip:takeDmg(amount)
     end
 
     self.health.currentHealth = self.health.currentHealth - amount
-    self.health.hit = true
-    self.health.hitTimer = self.health.hitDuration
-    self:setHealthbar()
-    self:hurtFeedback(amount)
 
-    if self.health.currentHealth <= 0 and not self.health.dead then
-        self:death()
+    if self.health.currentHealth <= 0 then
+        self.health.currentHealth = 0
+        if not self.health.dead then
+            self:death()
+        end
+    else
+        self.health.hit = true
+        self.health.hitTimer = self.health.hitDuration
+        self:setHealthbar()
+        self:hurtFeedback(amount)
     end
 end
 

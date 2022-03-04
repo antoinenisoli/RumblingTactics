@@ -7,12 +7,12 @@ function levelProfilesBank.getProfile(index)
             index = 1,
             bgSprite = love.graphics.newImage("assets/sprites/bg.png"),
             levelData = require 'levels.level01',
-            citizens = 100,
-            money = 1000,
+            citizens = 50,
+            money = 500,
 
             rescueShip = {
                 sprite = love.graphics.newImage('assets/sprites/rescueShip1.png'),
-                startHealth = 1,
+                startHealth = 15,
                 scale = 1.3,
                 occupiedTiles = {
                     59,
@@ -28,6 +28,16 @@ function levelProfilesBank.getProfile(index)
                     x = 640,
                     y = 640,
                 };
+            },
+
+            enemyStats = {
+                turretSpritesheet = love.graphics.newImage('assets/sprites/ground_shaker_asset/Blue/Weapons/turret_01_mk1.png'),
+                startHealth = 15,
+                damage = 1,
+                speed = 60,
+                shootRate = 2,
+                scoreValue = 25,
+                minDistance = 200
             }
         };
 
@@ -35,12 +45,12 @@ function levelProfilesBank.getProfile(index)
             index = 2,
             bgSprite = love.graphics.newImage("assets/sprites/bg.png"),
             levelData = require 'levels.level02',
-            citizens = 100,
+            citizens = 85,
             money = 100,
 
             rescueShip = {
                 sprite = love.graphics.newImage('assets/sprites/rescueShip2.png'),
-                startHealth = 50,
+                startHealth = 25,
                 scale = 1.3,
                 occupiedTiles = {
                     59,
@@ -56,6 +66,16 @@ function levelProfilesBank.getProfile(index)
                     x = 640,
                     y = 640,
                 };
+            },
+
+            enemyStats = {
+                turretSpritesheet = love.graphics.newImage('assets/sprites/ground_shaker_asset/Blue/Weapons/turret_01_mk2.png'),
+                startHealth = 30,
+                damage = 2,
+                speed = 75,
+                shootRate = 1.8,
+                scoreValue = 35,
+                minDistance = 250
             }
         };
 
@@ -63,7 +83,7 @@ function levelProfilesBank.getProfile(index)
             index = 3,
             bgSprite = love.graphics.newImage("assets/sprites/bg.png"),
             levelData = require 'levels.level03',
-            citizens = 100,
+            citizens = 150,
             money = 100,
 
             rescueShip = {
@@ -91,6 +111,16 @@ function levelProfilesBank.getProfile(index)
                     x = 640,
                     y = 640,
                 };
+            },
+
+            enemyStats = {
+                turretSpritesheet = love.graphics.newImage('assets/sprites/ground_shaker_asset/Blue/Weapons/turret_01_mk4.png'),
+                startHealth = 65,
+                damage = 5,
+                speed = 90,
+                shootRate = 1.5,
+                scoreValue = 50,
+                minDistance = 300
             }
         };
     }
