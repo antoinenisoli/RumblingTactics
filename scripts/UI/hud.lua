@@ -9,18 +9,21 @@ local font = love.graphics.newFont("assets/fonts/8-bit-hud.ttf", 10)
 local scale = 3
 local index = 1
 
-local fadeValue = 0
-local fadeSpeed = 1
+local fadeValue = 2
+local fadeSpeed = 2
+local transitionTimer = 0
 
 function hud:load()
     love.graphics.setFont(font)
     uiElements = {}
     turretSlots = {}
+    index = 1
+    fadeValue = 2
+
     local offset = 100
     local count = 4
     local index = 1
     local start = 775
-    fadeValue = 0
 
     for i = start, start + offset * count, offset do
         local slot = turretSlot.new(i, 1025, index)
@@ -52,16 +55,16 @@ end
 
 local function drawGameEnd()
     local text = gameWin and "Evacuation done !" or "Abort the evacuation !"
-        love.graphics.setColor(0, 0, 0, fadeValue * 0.8)
-        love.graphics.rectangle("fill", 0, 0, love.graphics.getWidth(), love.graphics.getHeight())
-
-        love.graphics.setColor(1, 1, 1, fadeValue)
-        love.graphics.print(text, love.graphics.getWidth()/2 - 50 * scale, 500, nil, scale, scale)
-        love.graphics.print("Press any key to go to the next level.", love.graphics.getWidth()/2 - 50 * scale, 600, nil, scale, scale)
+        love.graphics.print(text, love.graphics.getWidth()/2 - 75 * scale, 500, nil, scale, scale)
+        love.graphics.print("Press any key to go to the next level !", love.graphics.getWidth()/2 - 175 * scale, 600, nil, scale, scale)
         love.graphics.setColor(1, 1, 1, 1)
 end
 
 function hud.draw()
+    love.graphics.setColor(0, 0, 0, fadeValue * 0.8)
+    love.graphics.rectangle("fill", 0, 0, love.graphics.getWidth(), love.graphics.getHeight())
+    love.graphics.setColor(1, 1, 1, 1)
+
     if gameEnded then
         drawGameEnd()
     end
@@ -70,6 +73,7 @@ function hud.draw()
     love.graphics.setColor(1, 1, 0, 1)
     love.graphics.print("Money : "..tostring(currentMoney), love.graphics.getWidth()/2 - 50 * scale, 50, nil, scale, scale)
     love.graphics.setColor(1, 1, 1, 1)
+    love.graphics.print("Press escape to quit.", 50, 50, nil, 1, 1)
 
     for index, value in ipairs(uiElements) do
         value:draw()
@@ -96,8 +100,22 @@ function hud:update(dt)
 
     if gameEnded then
         fadeValue = fadeValue + dt * fadeSpeed
-        if fadeValue > 1 then
-            fadeValue = 1
+
+        if levelTransition then
+            transitionTimer = transitionTimer + dt
+            if transitionTimer >= 1.5 then
+                transitionTimer = 0
+                NextLevel()
+            end
+        else
+            if fadeValue > 1 then
+                fadeValue = 1
+            end
+        end
+    else
+        fadeValue = fadeValue - dt * 5
+        if fadeValue <= 0 then
+            fadeValue = 0
         end
     end
 end

@@ -23,8 +23,10 @@ function gridManager.setupMap(newGrid)
             NewInstance(currentTile)
             table.insert(allTiles, index, currentTile)
 
-            if index > count/2 - 2 and index < count/2 + 1  then
-                currentTile.locked = true
+            for i, value in ipairs(levelProfile.rescueShip.occupiedTiles) do
+                if index == value  then
+                    currentTile.locked = true
+                end
             end
         end
     end

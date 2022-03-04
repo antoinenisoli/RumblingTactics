@@ -7,13 +7,18 @@ function levelProfilesBank.getProfile(index)
             index = 1,
             bgSprite = love.graphics.newImage("assets/sprites/bg.png"),
             levelData = require 'levels.level01',
-            citizens = 1,
-            money = 100,
+            citizens = 100,
+            money = 1000,
 
             rescueShip = {
                 sprite = love.graphics.newImage('assets/sprites/rescueShip1.png'),
-                startHealth = 50,
-                scale = 1.3
+                startHealth = 1,
+                scale = 1.3,
+                occupiedTiles = {
+                    59,
+                    60,
+                    61,
+                };
             };
 
             grid = {
@@ -30,13 +35,18 @@ function levelProfilesBank.getProfile(index)
             index = 2,
             bgSprite = love.graphics.newImage("assets/sprites/bg.png"),
             levelData = require 'levels.level02',
-            citizens = 1,
+            citizens = 100,
             money = 100,
 
             rescueShip = {
                 sprite = love.graphics.newImage('assets/sprites/rescueShip2.png'),
                 startHealth = 50,
-                scale = 1.3
+                scale = 1.3,
+                occupiedTiles = {
+                    59,
+                    60,
+                    61,
+                };
             };
 
             grid = {
@@ -53,13 +63,25 @@ function levelProfilesBank.getProfile(index)
             index = 3,
             bgSprite = love.graphics.newImage("assets/sprites/bg.png"),
             levelData = require 'levels.level03',
-            citizens = 1,
+            citizens = 100,
             money = 100,
 
             rescueShip = {
                 sprite = love.graphics.newImage('assets/sprites/rescueShip3.png'),
                 startHealth = 50,
-                scale = 1.3
+                scale = 1.3,
+                occupiedTiles = {
+                    47,
+                    48,
+                    49,
+                    50,
+                    51,
+                    58,
+                    59,
+                    60,
+                    61,
+                    62,
+                };
             };
 
             grid = {

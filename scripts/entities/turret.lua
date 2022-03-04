@@ -1,6 +1,7 @@
 local entity = require 'scripts/entities/entity'
 local anim8 = require 'libraries/anim8' --for animations
 local gameManager = require 'scripts/gameManager'
+local soundManager = require 'scripts.soundManager'
 
 local turret = {}
 turret.__index = turret
@@ -9,6 +10,7 @@ local scale = 1
 
 function turret.new(x, y, profile)
     local instance = setmetatable({}, turret)
+    soundManager.playSound("newTurret", false, 0.08)
     
     instance.x = x
     instance.y = y
@@ -73,6 +75,7 @@ function turret:setupAnimations()
 end
 
 function turret:shoot()
+    soundManager.playSound(self.profile.shootSound, false)
     self.currentAnimation = self.animations.shoot
     self.animTimer = self.animations.shoot.totalDuration
     self.currentTarget:takeDmg(self.attackDamage)

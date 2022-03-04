@@ -2,15 +2,19 @@ local anim8 = require 'libraries/anim8' --for animations
 local destroyable = require 'scripts/entities/destroyable'
 local gameManager = require 'scripts/gameManager'
 local hud = require 'scripts/UI/hud'
+local soundManager = require 'scripts.soundManager'
 
 local enemy = {}
 enemy.__index = enemy
 setmetatable(enemy, destroyable)
 
 local scale = 1
+local mySound = nil
 
 function enemy.new(x, y, name)
     local instance = setmetatable({}, enemy)
+    mySound = soundManager.playSound("engine", true)
+
     instance.currentTarget = nil
     instance.x = x
     instance.y = y
@@ -81,9 +85,13 @@ function enemy:death()
     self:destroy()
     hud.newFloatingTxt(self.scoreValue, self.x, self.y, 1, NewColor(255, 255, 0, 1))
     RemoveEnemy(self)
+    if mySound ~= nil then
+        mySound:stop()
+    end
 end
 
 function enemy:shoot()
+    soundManager.playSound("enemyShoot", false, 0.06)
     self.currentAnimation = self.animations.shoot
     self.animTimer = self.animations.shoot.totalDuration
     mainShip:takeDmg(self.attackDamage)
@@ -117,8 +125,6 @@ function enemy:update(dt)
             self:follow(dt, mainShip)
         end
     end
-
-    
 end
 
 return enemy

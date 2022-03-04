@@ -1,7 +1,9 @@
 local npc = require 'scripts/entities/feedbacks/npc'
+local soundManager = require 'scripts.soundManager'
 
 gameWin = false
 gameEnded = false
+levelTransition = false
 currentMoney = 0
 citizens = 0
 mainShip = nil
@@ -46,17 +48,15 @@ local function randomSpawner()
 end
 
 local function spawnNPC()
+    npcSpawning.timer = npcSpawning.delay
     local x = math.random(gridMinX, gridMaxX)
     local y = math.random(gridMinY, gridMaxY)
     local character = npc.new(x, y)
     return character
 end
 
-function gameManager:update(dt)
-    if gameEnded then
-        gameEndTimer = gameEndTimer + dt
-    else
-        enemySpawning.timer = enemySpawning.timer + dt
+local function manageTimers(dt)
+    enemySpawning.timer = enemySpawning.timer + dt
         if enemySpawning.timer > enemySpawning.delay then
             enemySpawning.timer = 0
             randomSpawner()
@@ -65,9 +65,14 @@ function gameManager:update(dt)
         npcSpawning.timer = npcSpawning.timer - dt
         if npcSpawning.timer <= 0 then
             spawnNPC()
-            npcSpawning.timer = npcSpawning.delay
         end
+end
 
+function gameManager:update(dt)
+    if gameEnded then
+        gameEndTimer = gameEndTimer + dt
+    else
+        manageTimers(dt)
         if citizens <= 0 then
             GameWin()
         end
@@ -75,19 +80,22 @@ function gameManager:update(dt)
 end
 
 function gameManager.checkGameEnd()
-    if gameEnded then
+    if gameEnded and not levelTransition then
         if gameEndTimer > 1 then
-            NextLevel()
+            levelTransition = true
         end
     end
 end
 
 function GameOver()
+    soundManager.playSound("earthquake", true, 0.3)
+    CameraShake(500, 3)
     gameWin = false
     gameEnded = true
 end
 
 function GameWin()
+    soundManager.playSound("gameWin")
     gameWin = true
     gameEnded = true
 end

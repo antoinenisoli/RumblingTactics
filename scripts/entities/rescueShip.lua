@@ -10,7 +10,7 @@ function rescueShip.new(x, y)
     local instance = setmetatable({}, rescueShip)
     instance.sprite = levelProfile.rescueShip.sprite
     scale = levelProfile.rescueShip.scale
-    
+
     instance.healthBar = love.graphics.newImage('assets/sprites/cyberpunk/UI/tiles/tile0010.png')
     instance.width = instance.sprite:getWidth()
     instance.height = instance.sprite:getHeight()
@@ -52,7 +52,7 @@ function rescueShip:takeDmg(amount)
     self:setHealthbar()
     self:hurtFeedback(amount)
 
-    if (self.health.currentHealth <= 0) then
+    if self.health.currentHealth <= 0 and not self.health.dead then
         self:death()
     end
 end

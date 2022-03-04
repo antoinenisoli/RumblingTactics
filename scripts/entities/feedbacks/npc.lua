@@ -1,5 +1,6 @@
 local entity = require 'scripts/entities/entity'
 local anim8 = require 'libraries/anim8' -- for animations
+local soundManager = require 'scripts.soundManager'
 
 local npc = {}
 npc.__index = npc
@@ -40,23 +41,29 @@ function npc:draw()
     self.animation:draw(self.spriteSheet, self.x, self.y, nil, self.direction * scale, scale, self.width/2, self.height/2)
 end
 
+function npc:enterShip()
+    RemoveInstance(self)
+    self.done = true
+    citizens = citizens - 1
+    soundManager.playSound("newCitizen")
+end
+
 function npc:update(dt)
     if not self.done then
         self.animation:update(dt)
-        if self.x < mainShip.x then
-            self.direction = 1
-        else
-            self.direction = -1
-        end
-
-        self.distance = Distance(self.x, self.y, mainShip.x, mainShip.y)
-
-        if self.distance <= self.minDistance then
-            RemoveInstance(self)
-            self.done = true
-            citizens = citizens - 1
-        else
-            self:follow(dt, mainShip)
+        if mainShip ~= nil then
+            if self.x < mainShip.x then
+                self.direction = 1
+            else
+                self.direction = -1
+            end
+    
+            self.distance = Distance(self.x, self.y, mainShip.x, mainShip.y)
+            if self.distance <= self.minDistance then
+                self:enterShip()
+            else
+                self:follow(dt, mainShip)
+            end
         end
     end
 end

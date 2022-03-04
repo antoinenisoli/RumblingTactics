@@ -4,10 +4,10 @@ local hud = require 'scripts/UI/hud'
 local enemySpawner = require 'scripts/enemySpawner'
 local gridManager = require 'scripts/system/gridManager'
 local levelProfilesBank = require 'scripts.profiles.levelProfilesBank'
+local soundManager = require 'scripts.soundManager'
 
 mousePositionX, mousePositionY = 0, 0
 scaleFactor = 1
-local startX, startY = 700, 250
 local t, shakeMagnitude = 0,0
 local backGroundImage = love.graphics.newImage("assets/sprites/bg.png")
 local moonshine = require 'scripts/moonshine'
@@ -18,6 +18,7 @@ levelProfile = nil
 
 local instances = {}
 local allEnemies = {}
+local vid = nil
 
 local function setupPostProcess()
     postEffect = moonshine(moonshine.effects.filmgrain)
@@ -38,6 +39,8 @@ local function setupSpawners()
 end
 
 local function setupGame()
+    soundManager.clear()
+    soundManager:load()
     math.randomseed(os.time())
     love.graphics.setDefaultFilter("nearest", "nearest")
     love.window.setTitle('Jam')
@@ -46,6 +49,10 @@ local function setupGame()
 end
 
 function love.load()
+    t, shakeMagnitude = 0,0
+    vid = love.graphics.newVideo("assets/videos/tuto.ogv")
+    vid:play()
+
     levelProfile = levelProfilesBank.getProfile(levelCurrentIndex)
     backGroundImage = levelProfile.bgSprite
 
@@ -54,8 +61,8 @@ function love.load()
     setupPostProcess()
     gridManager.setupMap(levelProfile.grid)
 
-    gameManager.init(startX, startX * 2, startY, startY * 4)
-    mainShip = rescueShip.new(startX * 1.5, startY * 2)
+    gameManager.init(levelProfile.grid.startX, levelProfile.grid.startX * 2, levelProfile.grid.startY, levelProfile.grid.startY * 4)
+    mainShip = rescueShip.new(levelProfile.grid.startX * 1.5, levelProfile.grid.startY * 2)
     setupSpawners()
 end
 
@@ -136,6 +143,9 @@ function love.draw()
 
     hud.draw()
     love.graphics.pop()
+    if vid:isPlaying() then
+        --love.graphics.draw(vid, 0, 0)
+    end
 end
 
 function love.keypressed(key)
@@ -159,9 +169,11 @@ function NextLevel()
     instances = {}
     allEnemies = {}
     gameEnded = false
-
+    levelTransition = false
     levelCurrentIndex = math.fmod(levelCurrentIndex, GetLevelProfilesCount())
-    levelCurrentIndex = levelCurrentIndex + 1
+    if gameWin then
+        levelCurrentIndex = levelCurrentIndex + 1
+    end
 
     love.load()
 end

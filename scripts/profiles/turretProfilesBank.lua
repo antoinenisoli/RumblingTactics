@@ -10,6 +10,7 @@ function turretProfilesBank.getProfile(index)
             cost = 50,
             shootRate = 0.8,
             minDistance = 300,
+            shootSound = "turret1shoot",
         };
 
         [2] = {
@@ -19,6 +20,7 @@ function turretProfilesBank.getProfile(index)
             cost = 100,
             shootRate = 1,
             minDistance = 400,
+            shootSound = "turret1shoot",
         };
 
         [3] = {
@@ -26,8 +28,9 @@ function turretProfilesBank.getProfile(index)
             sprite = love.graphics.newImage('assets/sprites/turret03.png'),
             damage = 3,
             cost = 150,
-            shootRate = 1.45,
+            shootRate = 1.5,
             minDistance = 400,
+            shootSound = "turret1shoot",
         };
 
         [4] = {
@@ -37,15 +40,17 @@ function turretProfilesBank.getProfile(index)
             cost = 200,
             shootRate = 0.2,
             minDistance = 150,
+            shootSound = "turret4shoot",
         };
 
         [5] = {
             index = 5,
             sprite = love.graphics.newImage('assets/sprites/turret05.png'),
-            damage = 5,
+            damage = 10,
             cost = 220,
-            shootRate = 2,
+            shootRate = 3,
             minDistance = 3000,
+            shootSound = "turret5shoot",
         };
     }
 
