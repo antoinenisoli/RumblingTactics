@@ -31,7 +31,7 @@ function levelProfilesBank.getProfile(index)
             },
 
             enemyStats = {
-                turretSpritesheet = love.graphics.newImage('assets/sprites/ground_shaker_asset/Blue/Weapons/turret_01_mk1.png'),
+                turretSpritesheet = love.graphics.newImage('assets/sprites/BlueTurrets/turret_01_mk1.png'),
                 startHealth = 15,
                 damage = 1,
                 speed = 60,
@@ -69,7 +69,7 @@ function levelProfilesBank.getProfile(index)
             },
 
             enemyStats = {
-                turretSpritesheet = love.graphics.newImage('assets/sprites/ground_shaker_asset/Blue/Weapons/turret_01_mk2.png'),
+                turretSpritesheet = love.graphics.newImage('assets/sprites/BlueTurrets/turret_01_mk2.png'),
                 startHealth = 30,
                 damage = 2,
                 speed = 75,
@@ -114,7 +114,7 @@ function levelProfilesBank.getProfile(index)
             },
 
             enemyStats = {
-                turretSpritesheet = love.graphics.newImage('assets/sprites/ground_shaker_asset/Blue/Weapons/turret_01_mk4.png'),
+                turretSpritesheet = love.graphics.newImage('assets/sprites/BlueTurrets/turret_01_mk4.png'),
                 startHealth = 65,
                 damage = 5,
                 speed = 90,

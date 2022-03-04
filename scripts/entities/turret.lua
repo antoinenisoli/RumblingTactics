@@ -38,25 +38,25 @@ function turret:setupAnimations()
     self.height = 128 * scale
 
     if self.profile.index == 1 then
-        self.spriteSheet = love.graphics.newImage('assets/sprites/ground_shaker_asset/Red/Weapons/turret_01_mk1.png')
+        self.spriteSheet = love.graphics.newImage('assets/sprites/RedTurrets/turret_01_mk1.png')
         self.grid = anim8.newGrid(128, 128, self.spriteSheet:getWidth(), self.spriteSheet:getHeight())
         
         self.animations.shoot = anim8.newAnimation(self.grid('1-8', 1), 0.05)
 
     elseif self.profile.index == 2 then
-        self.spriteSheet = love.graphics.newImage('assets/sprites/ground_shaker_asset/Red/Weapons/turret_01_mk2.png')
+        self.spriteSheet = love.graphics.newImage('assets/sprites/RedTurrets/turret_01_mk2.png')
         self.grid = anim8.newGrid(128, 128, self.spriteSheet:getWidth(), self.spriteSheet:getHeight())
         
         self.animations.shoot = anim8.newAnimation(self.grid('1-8', 1), 0.05)
 
     elseif self.profile.index == 3 then
-        self.spriteSheet = love.graphics.newImage('assets/sprites/ground_shaker_asset/Red/Weapons/turret_01_mk4.png')
+        self.spriteSheet = love.graphics.newImage('assets/sprites/RedTurrets/turret_01_mk4.png')
         self.grid = anim8.newGrid(128, 128, self.spriteSheet:getWidth(), self.spriteSheet:getHeight())
         
         self.animations.shoot = anim8.newAnimation(self.grid('1-8', 1), 0.05)
 
     elseif self.profile.index == 4 then
-        self.spriteSheet = love.graphics.newImage('assets/sprites/ground_shaker_asset/Red/Weapons/turret_02_mk1.png')
+        self.spriteSheet = love.graphics.newImage('assets/sprites/RedTurrets/turret_02_mk1.png')
         self.grid = anim8.newGrid(128, 128, self.spriteSheet:getWidth(), self.spriteSheet:getHeight())
         
         self.animations.shoot = anim8.newAnimation(self.grid('1-11', 1), 0.02)

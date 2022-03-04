@@ -4,47 +4,47 @@ local storedSounds = {}
 local allSounds = {
     [1] = {
         name = "mainTheme",
-        sound = 'assets/sounds/musics/Race to Mars.mp3',
+        sound = 'assets/sounds/Race to Mars.mp3',
     },
 
     [2] = {
         name = "engine",
-        sound = 'assets/sounds/Free_Game_Sound_FX/ENGINE Motor Heavy Loop 08.wav',
+        sound = 'assets/sounds/ENGINE Motor Heavy Loop 08.wav',
     },
 
     [3] = {
         name = "explosion",
-        sound = 'assets/sounds/Free_Game_Sound_FX/EXPLOSION Bang 04.wav',
+        sound = 'assets/sounds/EXPLOSION Bang 04.wav',
     },
 
     [4] = {
         name = "turret1shoot",
-        sound = 'assets/sounds/big/Sci Fi Weapons Cyberpunk Arsenal Preview/LASRGun_Plasma Rifle Fire_03.wav',
+        sound = 'assets/sounds/LASRGun_Plasma Rifle Fire_03.wav',
     },
 
     [5] = {
         name = "turret5shoot",
-        sound = 'assets/sounds/big/Sci Fi Weapons Cyberpunk Arsenal Preview/GUNArtl_Rocket Launcher Fire_02.wav',
+        sound = 'assets/sounds/GUNArtl_Rocket Launcher Fire_02.wav',
     },
 
     [6] = {
         name = "turret4shoot",
-        sound = 'assets/sounds/big/Sci Fi Weapons Cyberpunk Arsenal Preview/LASRGun_Particle Compressor Fire_01.wav',
+        sound = 'assets/sounds/LASRGun_Particle Compressor Fire_01.wav',
     },
 
     [7] = {
         name = "enemyShoot",
-        sound = 'assets/sounds/big/Sci Fi Weapons Cyberpunk Arsenal Preview/GUNArtl_Rocket Launcher Fire_02.wav',
+        sound = 'assets/sounds/GUNArtl_Rocket Launcher Fire_02.wav',
     },
 
     [8] = {
         name = "newCitizen",
-        sound = 'assets/sounds/SFX2020/GetAPowerUp.wav',
+        sound = 'assets/sounds/GetAPowerUp.wav',
     },
 
     [9] = {
         name = "gameWin",
-        sound = 'assets/sounds/SFX2020/HeliShipLanging.wav',
+        sound = 'assets/sounds/HeliShipLanging.wav',
     },
 
     [10] = {
@@ -54,7 +54,7 @@ local allSounds = {
 
     [11] = {
         name = "newTurret",
-        sound = 'assets/sounds/big/Sci Fi Weapons Cyberpunk Arsenal Preview/MOTRSrvo_Plasma Rifle Arm_01.wav',
+        sound = 'assets/sounds/MOTRSrvo_Plasma Rifle Arm_01.wav',
     },
 }
 

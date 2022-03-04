@@ -11,7 +11,7 @@ function rescueShip.new(x, y)
     instance.sprite = levelProfile.rescueShip.sprite
     scale = levelProfile.rescueShip.scale
 
-    instance.healthBar = love.graphics.newImage('assets/sprites/cyberpunk/UI/tiles/tile0010.png')
+    instance.healthBar = love.graphics.newImage('assets/sprites/hud/tiles/tile0010.png')
     instance.width = instance.sprite:getWidth()
     instance.height = instance.sprite:getHeight()
 
@@ -36,7 +36,7 @@ function rescueShip:setupHealth()
 end
 
 function rescueShip:setHealthbar()
-    local path = 'assets/sprites/cyberpunk/UI/tiles/tile00'
+    local path = 'assets/sprites/hud/tiles/tile00'
     local index = (self.health.currentHealth / self.health.maxHealth) * 10
     self.healthBar = love.graphics.newImage(path..tostring(math.ceil(index))..".png")
 end

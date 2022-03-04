@@ -22,7 +22,7 @@ function enemy.new(x, y, name)
     instance.name = name
     instance:setupShake()
     instance:setupAnimations()
-    instance.sprite = love.graphics.newImage('assets/sprites/ground_shaker_asset/Blue/Bodies/body_tracks.png')
+    instance.sprite = love.graphics.newImage('assets/sprites/body_tracks.png')
     instance.width = instance.sprite:getWidth() * scale
     instance.height = instance.sprite:getHeight() * scale
 

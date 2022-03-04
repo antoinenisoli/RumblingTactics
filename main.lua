@@ -17,7 +17,7 @@ local splashes = {
 local splash 
 
 mousePositionX, mousePositionY = 0, 0
-scaleFactor = 1
+local scaleFactor = 1
 local t, shakeMagnitude = 0,0
 local backGroundImage = love.graphics.newImage("assets/sprites/bg.png")
 local moonshine = require 'scripts/moonshine'
@@ -49,12 +49,17 @@ local function setupSpawners()
 end
 
 local function setupGame()
+    love.window.setFullscreen(true)
+    SCREEN_SIZE_X = love.graphics.getWidth()
+    SCREEN_SIZE_Y = love.graphics.getHeight()
+
+    love.window.setMode(1920, 1080)
+    love.graphics.setDefaultFilter("nearest", "nearest")
+    love.window.setTitle('Rumbling Tactis')
     soundManager.clear()
     soundManager:load()
     math.randomseed(os.time())
-    love.graphics.setDefaultFilter("nearest", "nearest")
-    love.window.setTitle('Jam')
-    love.window.setFullscreen(true)
+    
     love.keyboard.keysPressed = {}
 end
 
@@ -68,7 +73,9 @@ local function setupSplashes()
 end
 
 function love.load()
+    setupGame()
     setupSplashes()
+
     t, shakeMagnitude = 0,0
     vid = love.graphics.newVideo("assets/videos/tuto.ogv")
     vid:play()
@@ -77,7 +84,6 @@ function love.load()
     backGroundImage = levelProfile.bgSprite
 
     hud:load()
-    setupGame()
     setupPostProcess()
     gridManager.setupMap(levelProfile.grid)
 
@@ -147,6 +153,12 @@ end
 
 function love.draw()
     love.graphics.push()
+
+    local scale = {}
+    scale.x = SCREEN_SIZE_X/1920
+    scale.y = SCREEN_SIZE_Y/1080
+    --love.graphics.scale(scale.x,scale.y) 
+
     postEffect(function()
         love.graphics.setDefaultFilter("nearest", "nearest")
 
@@ -156,8 +168,7 @@ function love.draw()
         love.graphics.translate(dx, dy)
     end
 
-    love.graphics.draw(backGroundImage, 0,0)
-    love.graphics.scale(scaleFactor, scaleFactor)   -- reduce everything by 50% in both X and Y coordinates
+    love.graphics.draw(backGroundImage, 0, 0)
     for index, value in ipairs(instances) do
         value:draw()
     end
@@ -165,14 +176,11 @@ function love.draw()
     end)
 
     hud.draw()
-    love.graphics.pop()
-    if vid:isPlaying() then
-        --love.graphics.draw(vid, 0, 0)
-    end
-    
     if splash ~= nil then
         splash:draw()
     end
+
+    love.graphics.pop()
 end
 
 function love.keypressed(key)
