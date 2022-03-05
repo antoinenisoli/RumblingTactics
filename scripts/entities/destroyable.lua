@@ -18,7 +18,7 @@ end
 function destroyable:destroy()
     self.health.dead = true
     soundManager.playSound("explosion", false, 0.05)
-    CameraShake(0.2, 1)
+    CameraShake(0.2, 5)
     local fx = explosion.new(self.x, self.y)
     NewInstance(fx)
     RemoveInstance(self)

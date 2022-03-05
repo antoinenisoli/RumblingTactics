@@ -89,7 +89,7 @@ end
 
 function GameOver()
     soundManager.playSound("earthquake", true, 0.3)
-    CameraShake(500, 3)
+    CameraShake(500, 12)
     gameWin = false
     gameEnded = true
 end

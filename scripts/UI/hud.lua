@@ -61,7 +61,7 @@ local function drawGameEnd()
 end
 
 function hud.draw()
-    love.graphics.setColor(0, 0, 0, fadeValue * 0.8)
+    love.graphics.setColor(0, 0, 0, fadeValue * 0.5)
     love.graphics.rectangle("fill", 0, 0, desired_width, desired_height)
     love.graphics.setColor(1, 1, 1, 1)
 
