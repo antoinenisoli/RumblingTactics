@@ -85,8 +85,6 @@ function mainGame.keypressed(key)
 end
 
 function NextLevel()
-    mainGame.load()
-    backGroundImage = levelProfile.bgSprite
     if gameWin then
         levelCurrentIndex = math.fmod(levelCurrentIndex, GetLevelProfilesCount())
         levelCurrentIndex = levelCurrentIndex + 1
@@ -95,6 +93,8 @@ function NextLevel()
     if levelCurrentIndex <= 0 then
         levelCurrentIndex = 1
     end
+
+    mainGame.load()
 end
 
 function mainGame.mousepressed(x, y, button)

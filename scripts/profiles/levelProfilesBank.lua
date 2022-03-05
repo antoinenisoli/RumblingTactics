@@ -12,7 +12,7 @@ function levelProfilesBank.getProfile(index)
 
             rescueShip = {
                 sprite = love.graphics.newImage('assets/sprites/rescueShip1.png'),
-                startHealth = 15,
+                startHealth = 25,
                 scale = 1.3,
                 occupiedTiles = {
                     59,
@@ -32,7 +32,7 @@ function levelProfilesBank.getProfile(index)
 
             enemyStats = {
                 turretSpritesheet = love.graphics.newImage('assets/sprites/BlueTurrets/turret_01_mk1.png'),
-                startHealth = 15,
+                startHealth = 25,
                 damage = 1,
                 speed = 60,
                 shootRate = 2,
@@ -50,7 +50,7 @@ function levelProfilesBank.getProfile(index)
 
             rescueShip = {
                 sprite = love.graphics.newImage('assets/sprites/rescueShip2.png'),
-                startHealth = 25,
+                startHealth = 35,
                 scale = 1.3,
                 occupiedTiles = {
                     59,

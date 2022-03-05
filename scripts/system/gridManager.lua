@@ -37,9 +37,11 @@ function gridManager.setProfile(index)
 end
 
 function gridManager.mousepressed(button)
-    if button == 1 then
-        if selectedTile ~= nil then
-            selectedTile:Click(turretProfile)
+    if not gameEnded then
+        if button == 1 then
+            if selectedTile ~= nil then
+                selectedTile:Click(turretProfile)
+            end
         end
     end
 end

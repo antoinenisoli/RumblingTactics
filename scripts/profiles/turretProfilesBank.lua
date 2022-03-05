@@ -7,7 +7,7 @@ function turretProfilesBank.getProfile(index)
             index = 1,
             sprite = love.graphics.newImage('assets/sprites/turret01.png'),
             damage = 1,
-            cost = 75,
+            cost = 65,
             shootRate = 1,
             minDistance = 300,
             shootSound = "turret1shoot",
