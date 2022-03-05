@@ -21,7 +21,7 @@ function gameManager.init(x1, x2, y1, y2)
 
     enemySpawning = {}
     enemySpawning.timer = 0
-    enemySpawning.delay = 2
+    enemySpawning.delay = levelProfile.enemySpawnDelay
     enemySpawning.currentSpawner = nil
     enemySpawning.allSpawners = {}
 

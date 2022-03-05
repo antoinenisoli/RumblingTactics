@@ -69,12 +69,12 @@ function hud.draw()
         drawGameEnd()
     end
 
-    love.graphics.print("Citizens : "..tostring(citizens), desired_width/2 - 50 * scale, 100, nil, scale, scale)
+    love.graphics.print(tostring(citizens).." Citizens left", desired_width/2 - 50 * scale, 100, nil, scale, scale)
     love.graphics.setColor(1, 1, 0, 1)
-    love.graphics.print("Money : "..tostring(currentMoney), desired_width/2 - 50 * scale, 50, nil, scale, scale)
+    love.graphics.print(tostring(currentMoney).." $", desired_width/2 - 25 * scale, 50, nil, scale, scale)
     love.graphics.setColor(1, 1, 1, 1)
     love.graphics.print("Press escape to quit.", 50, 50, nil, 1, 1)
-    love.graphics.print(mousePositionX.." "..mousePositionY, 50, 80, nil, 1, 1)
+    --love.graphics.print(mousePositionX.." "..mousePositionY, 50, 80, nil, 1, 1)
 
     for index, value in ipairs(uiElements) do
         value:draw()

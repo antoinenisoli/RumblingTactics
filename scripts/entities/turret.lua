@@ -125,6 +125,7 @@ function turret:update(dt)
     else
         self.currentTarget = ClosestEnemy(self.x, self.y, self.minDistance)
         self.animTimer = 0
+        self.shootTimer = 0
     end
 end
 
