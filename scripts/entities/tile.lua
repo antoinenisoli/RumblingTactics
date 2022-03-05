@@ -50,7 +50,6 @@ end
 
 function tile:Click(profile)
     if not self.locked then
-        print(self.name)
         self.myTurret = turret.new(self.x, self.y, profile)
         NewInstance(self.myTurret)
         self.locked = true

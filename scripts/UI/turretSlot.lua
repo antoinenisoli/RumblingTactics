@@ -12,7 +12,6 @@ function turretSlot.new(x, y, index)
     instance.x = x
     instance.y = y
 
-    print(index)
     instance.profile = turretProfilesBank.getProfile(index)
     instance.selectedSprite = love.graphics.newImage("assets/sprites/hud/Layer 2.png")
     instance.sprite = love.graphics.newImage("assets/sprites/hud/Layer 3.png")

@@ -26,7 +26,7 @@ function hud:load()
     local start = 775
 
     for i = start, start + offset * count, offset do
-        local slot = turretSlot.new(i, SCREEN_SIZE_Y - 25, index)
+        local slot = turretSlot.new(i, desired_height - 55, index)
         table.insert(uiElements, slot)
         table.insert(turretSlots, slot)
         index = index + 1
@@ -55,25 +55,26 @@ end
 
 local function drawGameEnd()
     local text = gameWin and "Evacuation done !" or "Abort the evacuation !"
-        love.graphics.print(text, SCREEN_SIZE_X/2 - 75 * scale, 500, nil, scale, scale)
-        love.graphics.print("Press any key to go to the next level !", SCREEN_SIZE_X/2 - 175 * scale, 600, nil, scale, scale)
+        love.graphics.print(text, desired_width/2 - 75 * scale, 500, nil, scale, scale)
+        love.graphics.print("Press any key to go to the next level !", desired_width/2 - 175 * scale, 600, nil, scale, scale)
         love.graphics.setColor(1, 1, 1, 1)
 end
 
 function hud.draw()
     love.graphics.setColor(0, 0, 0, fadeValue * 0.8)
-    love.graphics.rectangle("fill", 0, 0, SCREEN_SIZE_X, SCREEN_SIZE_Y)
+    love.graphics.rectangle("fill", 0, 0, desired_width, desired_height)
     love.graphics.setColor(1, 1, 1, 1)
 
     if gameEnded then
         drawGameEnd()
     end
 
-    love.graphics.print("Citizens : "..tostring(citizens), SCREEN_SIZE_X/2 - 50 * scale, 100, nil, scale, scale)
+    love.graphics.print("Citizens : "..tostring(citizens), desired_width/2 - 50 * scale, 100, nil, scale, scale)
     love.graphics.setColor(1, 1, 0, 1)
-    love.graphics.print("Money : "..tostring(currentMoney), SCREEN_SIZE_X/2 - 50 * scale, 50, nil, scale, scale)
+    love.graphics.print("Money : "..tostring(currentMoney), desired_width/2 - 50 * scale, 50, nil, scale, scale)
     love.graphics.setColor(1, 1, 1, 1)
     love.graphics.print("Press escape to quit.", 50, 50, nil, 1, 1)
+    love.graphics.print(mousePositionX.." "..mousePositionY, 50, 80, nil, 1, 1)
 
     for index, value in ipairs(uiElements) do
         value:draw()

@@ -30,6 +30,15 @@ local instances = {}
 local allEnemies = {}
 local vid = nil
 
+desired_width = 1920
+desired_height = 1080 
+local xoffset = 0
+local yoffset = 0
+SCREEN_SIZE_X = 0
+SCREEN_SIZE_Y = 0
+ScreenScale = {}
+local scaleM
+
 local function setupPostProcess()
     postEffect = moonshine(moonshine.effects.filmgrain)
                     .chain(moonshine.effects.vignette)
@@ -52,10 +61,16 @@ local function setupGame()
     love.window.setFullscreen(true)
     SCREEN_SIZE_X = love.graphics.getWidth()
     SCREEN_SIZE_Y = love.graphics.getHeight()
+    ScreenScale = {}
+    ScreenScale.x = SCREEN_SIZE_X / desired_width
+    ScreenScale.y = SCREEN_SIZE_Y / desired_height
+    scaleM = math.min(ScreenScale.x, ScreenScale.y)
 
-    love.window.setMode(1920, 1080)
+    xoffset = (SCREEN_SIZE_X - desired_width * scaleM)/2
+    yoffset = (SCREEN_SIZE_Y - desired_height * scaleM)/2
+
     love.graphics.setDefaultFilter("nearest", "nearest")
-    love.window.setTitle('Rumbling Tactis')
+    love.window.setTitle('Rumbling Tactics')
     soundManager.clear()
     soundManager:load()
     math.randomseed(os.time())
@@ -151,36 +166,39 @@ function NewColor(r, g, b, a)
     return r, g, b, a
 end
 
-function love.draw()
-    love.graphics.push()
+local function scaleToScreenSize()
+    love.graphics.scale(ScreenScale.x, ScreenScale.y) 
+    love.graphics.translate(xoffset, yoffset)
+end
 
-    local scale = {}
-    scale.x = SCREEN_SIZE_X/1920
-    scale.y = SCREEN_SIZE_Y/1080
-    --love.graphics.scale(scale.x,scale.y) 
-
-    postEffect(function()
-        love.graphics.setDefaultFilter("nearest", "nearest")
-
+local function inPostProcess()
     if t > 0 then
         local dx = love.math.random(-shakeMagnitude, shakeMagnitude)
         local dy = love.math.random(-shakeMagnitude, shakeMagnitude)
-        love.graphics.translate(dx, dy)
+        love.graphics.translate(xoffset + dx, dy + yoffset)
     end
 
     love.graphics.draw(backGroundImage, 0, 0)
     for index, value in ipairs(instances) do
         value:draw()
     end
+end
 
+function love.draw()
+    postEffect(function()
+        love.graphics.push()
+        scaleToScreenSize()
+        inPostProcess()
+        love.graphics.pop()
+
+        
     end)
 
+    scaleToScreenSize()
     hud.draw()
     if splash ~= nil then
         splash:draw()
     end
-
-    love.graphics.pop()
 end
 
 function love.keypressed(key)
@@ -237,6 +255,8 @@ function love.update(dt)
     if not gameEnded then
         gridManager.update(dt)
         mousePositionX, mousePositionY = love.mouse.getPosition()
+        mousePositionX = mousePositionX * (desired_width / SCREEN_SIZE_X)
+        mousePositionY = mousePositionY * (desired_height / SCREEN_SIZE_Y)
 
         for index, value in ipairs(instances) do
             value:update(dt)
