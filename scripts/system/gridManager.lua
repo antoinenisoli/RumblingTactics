@@ -6,7 +6,7 @@ local gridManager = {}
 local grid = {}
 local selectedTile = nil
 local allTiles = {}
-local turretProfile = nil
+turretProfile = nil
 
 function gridManager.setupMap(newGrid)
     turretProfile = turretProfilesBank.getProfile(1)
@@ -40,7 +40,7 @@ function gridManager.mousepressed(button)
     if not gameEnded then
         if button == 1 then
             if selectedTile ~= nil then
-                selectedTile:Click(turretProfile)
+                selectedTile:Click()
             end
         end
     end

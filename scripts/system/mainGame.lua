@@ -108,9 +108,6 @@ function mainGame.update(dt)
 
     if not gameEnded then
         gridManager.update(dt)
-        mousePositionX, mousePositionY = love.mouse.getPosition()
-        mousePositionX = mousePositionX * (desired_width / SCREEN_SIZE_X)
-        mousePositionY = mousePositionY * (desired_height / SCREEN_SIZE_Y)
     end
 end
 

@@ -3,6 +3,7 @@ local startMenu = require 'scripts.UI.startMenu'
 local mainGame = require 'scripts.system.mainGame'
 local moonshine = require 'scripts/moonshine'
 flux = require "libraries.flux"
+font = love.graphics.newFont("assets/fonts/8-bit-hud.ttf", 10)
 
 gameState = "menu"
 t, shakeMagnitude = 0,0
@@ -48,6 +49,7 @@ local function setupGame()
 end
 
 function love.load()
+    love.graphics.setFont(font)
     setupGame()
     setupPostProcess()
 
@@ -57,7 +59,7 @@ end
 function SetGameState(state)
     gameState = state
     if state == "menu" then
-        startMenu.load()
+        startMenu:load()
     elseif state == "game" then
         mainGame.load()
     end
@@ -113,8 +115,13 @@ local function inPostProcess()
 end
 
 function love.draw()
-    if gameState == "menu" then   
-        startMenu:draw()     
+    if gameState == "menu" then  
+        postEffect(function() 
+            love.graphics.push()
+            scaleToScreenSize()
+            startMenu:draw()     
+            love.graphics.pop()
+        end)
 
     elseif gameState == "game" then    
         postEffect(function()
@@ -142,6 +149,8 @@ end
 function love.mousepressed(x, y, button)
     if gameState == "game" then 
         mainGame.mousepressed(x, y, button)
+    else
+        startMenu.mousepressed(button)
     end
 end
 
@@ -150,6 +159,10 @@ function love.update(dt)
     if t >= 0 then
         t = t - dt
     end
+
+    mousePositionX, mousePositionY = love.mouse.getPosition()
+    mousePositionX = mousePositionX * (desired_width / SCREEN_SIZE_X)
+    mousePositionY = mousePositionY * (desired_height / SCREEN_SIZE_Y)
 
     if gameState == "menu" then
         startMenu:update(dt)

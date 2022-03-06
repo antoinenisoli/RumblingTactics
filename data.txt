@@ -1,0 +1,9 @@
+In a world at war, your base has been invaded by enemies. 
+A rescue ship is here to gather all the citizens and evacuate them, 
+and you are a commander who manage the defense through a computer screen.
+Use the left click to build turrets on the map that will defend the ship, 
+until all citizens are gathered. 
+
+Killing enemies make you gain money in order to build stronger turrets.
+
+Use the right/left arrows to switch the current turret profile.

@@ -1,9 +1,9 @@
-local entity = require 'scripts/entities/entity'
+local button = require 'scripts.UI.button'
 local turret = require 'scripts/entities/turret'
 
 local tile = {}
 tile.__index = tile
-setmetatable(tile, entity)
+setmetatable(tile, button)
 local scale = 2
 
 function tile.new(x,y, name)
@@ -15,6 +15,10 @@ function tile.new(x,y, name)
     instance.sprite = love.graphics.newImage("assets/sprites/tile.png")
     instance.width = instance.sprite:getWidth() * scale
     instance.height = instance.sprite:getHeight() * scale
+    instance.boundingBox = {
+        x = instance.width,
+        y = instance.height,
+    }
 
     instance.locked = false
     instance.myTurret = nil
@@ -41,16 +45,9 @@ function tile:draw()
     --love.graphics.print(self.name, self.x - self.width/2, self.y - self.height/2, nil, 0.7, 0.7)
 end
 
-function tile:OnMouse()
-    return mousePositionX < (self.x + self.width/2) 
-    and mousePositionX > (self.x - self.width/2) 
-    and mousePositionY < (self.y + self.height/2) 
-    and mousePositionY > (self.y - self.height/2) 
-end
-
-function tile:Click(profile)
+function tile:Execute()
     if not self.locked then
-        self.myTurret = turret.new(self.x, self.y, profile)
+        self.myTurret = turret.new(self.x, self.y, turretProfile)
         NewInstance(self.myTurret)
         self.locked = true
     end

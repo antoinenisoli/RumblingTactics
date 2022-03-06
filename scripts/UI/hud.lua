@@ -5,7 +5,6 @@ local gridManager = require 'scripts/system/gridManager'
 local hud = {}
 local uiElements = {}
 local turretSlots = {}
-local font = love.graphics.newFont("assets/fonts/8-bit-hud.ttf", 10)
 local scale = 3
 local index = 1
 
@@ -14,7 +13,6 @@ local fadeSpeed = 2
 local transitionTimer = 0
 
 function hud:load()
-    love.graphics.setFont(font)
     uiElements = {}
     turretSlots = {}
     index = 1

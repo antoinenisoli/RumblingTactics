@@ -56,6 +56,11 @@ local allSounds = {
         name = "newTurret",
         sound = 'assets/sounds/MOTRSrvo_Plasma Rifle Arm_01.wav',
     },
+
+    [12] = {
+        name = "menuTheme",
+        sound = 'assets/sounds/Checking Manifest.mp3',
+    },
 }
 
 function soundManager.playSound(name, loop, volume, pitch)
